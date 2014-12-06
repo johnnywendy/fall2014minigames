@@ -11,7 +11,9 @@ public class MainMenu : MonoBehaviour {
 		alertBox.title = "Hey Listen";
 		alertBox.message = "Go to a scene?";
 		alertBox.SetLeftAction("destroy");
-		alertBox.SetRightAction("loadscene","LG-1");*/
+		alertBox.SetRightAction("loadscene","LG-1");
+		// OR
+		//alertBox.SetRightAction(gameObject,"MainMenu","LoadScene","LG-1");*/
 	}
 	
 	// Update is called once per frame
