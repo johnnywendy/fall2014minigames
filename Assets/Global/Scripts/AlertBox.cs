@@ -73,7 +73,7 @@ public class AlertBox : MonoBehaviour {
 		Vector3 scale = transform.localScale;
 		Quaternion rotation = transform.localRotation;
 		transform.parent = GameObject.Find ("Canvas").transform;
-		transform.position = pos;
+		transform.position = new Vector3(pos.x,pos.y,Camera.main.transform.position.z+1f);
 		transform.localScale = scale;
 		transform.localRotation = rotation;
 		rightButton = transform.FindChild("RightButton").transform.FindChild("Text").GetComponent<Text>() as Text;

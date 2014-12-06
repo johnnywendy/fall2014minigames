@@ -5,15 +5,19 @@ public class MainMenu : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+
 		// Alert Box Usage Example
-		/*GameObject alert = (GameObject)Instantiate(Resources.Load("Alert", typeof(GameObject)),Vector3.zero,Quaternion.identity);
-		AlertBox alertBox = alert.GetComponent<AlertBox>();
-		alertBox.title = "Hey Listen";
-		alertBox.message = "Go to a scene?";
-		alertBox.SetLeftAction("destroy");
-		alertBox.SetRightAction("loadscene","LG-1");
-		// OR
-		//alertBox.SetRightAction(gameObject,"MainMenu","LoadScene","LG-1");*/
+		if (!PlayerPrefs.HasKey("CompletedFirstRun")) {
+			GameObject alert = (GameObject)Instantiate(Resources.Load("Alert", typeof(GameObject)),Vector3.zero,Quaternion.identity);
+			AlertBox alertBox = alert.GetComponent<AlertBox>();
+			alertBox.title = "Welcome";
+			alertBox.message = "This is an example of an alert message.";
+			alertBox.SetLeftAction("destroy");
+			alertBox.SetRightAction("destroy");
+			// OR
+			//alertBox.SetRightAction(gameObject,"MainMenu","LoadScene","LG-1");*/
+			PlayerPrefs.SetString("CompletedFirstRun","YES");
+		}
 	}
 	
 	// Update is called once per frame
