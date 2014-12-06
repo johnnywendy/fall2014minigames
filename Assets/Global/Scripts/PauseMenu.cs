@@ -10,8 +10,8 @@ public class PauseMenu : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		Vector3 pos = transform.position;
-		transform.position = new Vector3(pos.x,pos.y,Camera.main.transform.position.z+1);
+		Vector3 pos = transform.localPosition;
+		transform.localPosition = new Vector3(pos.x,pos.y,Camera.main.transform.position.z+1);
 	}
 	
 	// Update is called once per frame
