@@ -41,7 +41,7 @@ public class ButtonTest : MonoBehaviour {
 
 	public void DisplayHint(string msg) {
 		hintTextA.text = msg;
-		StartCoroutine (TimeDelay()); 
+		StartCoroutine (TimeDelay(5)); 
 		//hintTextA.text = "";
 	}
 
