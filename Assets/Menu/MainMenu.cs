@@ -8,6 +8,7 @@ public class MainMenu : MonoBehaviour {
 
 		// Alert Box Usage Example
 		if (!PlayerPrefs.HasKey("CompletedFirstRun")) {
+
 			GameObject alert = (GameObject)Instantiate(Resources.Load("Alert", typeof(GameObject)),Vector3.zero,Quaternion.identity);
 			AlertBox alertBox = alert.GetComponent<AlertBox>();
 			alertBox.title = "Welcome";
@@ -16,6 +17,7 @@ public class MainMenu : MonoBehaviour {
 			alertBox.SetRightAction("destroy");
 			// OR
 			//alertBox.SetRightAction(gameObject,"MainMenu","LoadScene","LG-1");*/
+
 			PlayerPrefs.SetString("CompletedFirstRun","YES");
 		}
 	}
