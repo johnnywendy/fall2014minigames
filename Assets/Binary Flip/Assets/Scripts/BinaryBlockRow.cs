@@ -64,7 +64,7 @@ public class BinaryBlockRow : MonoBehaviour
 				goaltxttemp.text = goalnum.ToString ();
 			
 				currentVal = 0;
-				for (int a =0; a<8; ++a) {
+				for (int a =0; a<8; a++) {
 						if (blockarr [a].getValue () == 1) {
 								currentVal += (int)System.Math.Pow (2, a);
 						}
