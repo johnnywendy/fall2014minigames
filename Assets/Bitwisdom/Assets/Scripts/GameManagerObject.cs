@@ -44,7 +44,6 @@ public class GameManagerObject : MonoBehaviour {
 			current_lvl = PlayerPrefs.GetInt ("BW_CurrentLevel");
 		}
 
-
 		string path = System.IO.Directory.GetCurrentDirectory ()+"/Assets/Bitwisdom/Assets/Resources/bw_puzzleList.txt";
 		string[] fileText = System.IO.File.ReadAllLines (path),
 				 lvlLoadout;
@@ -266,17 +265,36 @@ public class FormulaConverter
 		}
 		
 		if (valid) {
-			while (operatorStack.Count > 0) {
+			while (operatorStack.Count > 0 && valid) {
 				string op = operatorStack.Pop ();
 				BitwiseInt arg1, arg2;
 				if (op == "~") {
-					arg2 = new BitwiseInt (0);
-					arg1 = operandStack.Pop ();
+					if(operandStack.Count > 0)
+					{
+						arg2 = new BitwiseInt (0);
+						arg1 = operandStack.Pop ();
+					}
+					else{
+						valid = false;
+						arg2 = new BitwiseInt (0);
+						arg1 = new BitwiseInt (0);
+					}
 				} else {
-					arg2 = operandStack.Pop ();
-					arg1 = operandStack.Pop ();
+					if(operandStack.Count > 1)
+					{
+						arg2 = operandStack.Pop ();
+						arg1 = operandStack.Pop ();
+					}
+					else{
+						valid = false;
+						arg2 = new BitwiseInt (0);
+						arg1 = new BitwiseInt (0);
+					}
 				}
-				operandStack.Push (_operations [System.Array.IndexOf (_operators, op)] (arg1, arg2));
+				if(valid)
+				{
+					operandStack.Push (_operations [System.Array.IndexOf (_operators, op)] (arg1, arg2));
+				}
 			}
 			return operandStack.Pop ();
 		} else {

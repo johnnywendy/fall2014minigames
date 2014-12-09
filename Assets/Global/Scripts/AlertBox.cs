@@ -131,7 +131,7 @@ public class AlertBox : MonoBehaviour {
 			Application.LoadLevel(_scene1);
 			return;
 		}
-		if (passParams2)
+		if (passParams1)
 			_target1.GetComponent(_component1).SendMessage(_action1, _parameter1);
 		else
 			_target1.GetComponent(_component1).SendMessage(_action1);
