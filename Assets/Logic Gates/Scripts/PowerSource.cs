@@ -1,36 +1,21 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class PowerSource : MonoBehaviour {
 
 	public bool power = true;
-	public bool pluggedIn = false;
-	public LogicGate pluggedGate = null;
-	public bool flipOutput = false;
-
-	private GameObject sparks = null;
-	private bool shouldResetSparks = true;
-	private bool _shouldRenderSparks = true;
-	public bool shouldRenderSparks {
-		set {
-			_shouldRenderSparks = value;
-		}
-		get {
-			return _shouldRenderSparks;
-		}
-	}
+	public List<LogicGate> pluggedGates = new List<LogicGate>();
+	public List<string> pluggedSides = new List<string>();
+	private List<Cable> cables = new List<Cable>();
+	private Cable newCable = null;
 
 	private GameObject Output;
-	public bool cableShouldFollowMouse = false;
-	private LineRenderer cable;
-	private string side = "none";
-	public bool cableShouldFollowTarget = false;
-	private LogicGate target;
 	private bool _output = true;
 	public bool output {
 		set {
 			_output = value;
-			updatePluggedGates();
+			UpdatePluggedGates();
 		}
 		get {
 			return _output; 
@@ -39,121 +24,102 @@ public class PowerSource : MonoBehaviour {
 
 	void Start() {
 		Output = transform.FindChild("Output").gameObject;
-		cable = GetComponent<LineRenderer> ();
-		cable.SetVertexCount(2);
-		cable.SetColors(HexToColor("424242"),HexToColor("424242"));
-		cable.SetWidth (0.04f, 0.04f);
-		cable.SetPosition (0, new Vector3 (Output.transform.position.x,Output.transform.position.y,Output.transform.position.z+1));
-		cable.SetPosition (1, Vector3.zero);
-		cable.enabled = false;
-		cable.material.color = Color.cyan;
-
-		sparks = transform.FindChild ("Sparks").gameObject;
-		sparks.particleSystem.enableEmission = false;
 	}
 
 	void Update() {
-		if (flipOutput) {
-			if (output)
-				cable.material.color = Color.cyan;
-			else
-				cable.material.color = Color.magenta;
-			output = !output;
-			flipOutput = false;
-		}
-		if (cableShouldFollowMouse) {
-			Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-			cable.SetPosition (1, new Vector3 (mousePos.x,mousePos.y,Output.transform.position.z-1));
 
-			RaycastHit hit = new RaycastHit();
-			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-			
-			if (Physics.Raycast(ray, out hit)) {
-				if (hit.collider.transform.gameObject.name == "Input1" || hit.collider.transform.gameObject.name == "Input2") {
-					cable.material.color = Color.green;
-				}
-			}
-			else {
-				cable.material.color = Color.red;
-			}
-		}
-		if (cableShouldFollowTarget) {
-			if (side == "left")
-				cable.SetPosition(1,target.getInputPos(side));
-			if (side == "right")
-				cable.SetPosition(1,target.getInputPos(side));
-		}
-		if (shouldRenderSparks && pluggedGate != null) {
-			if (shouldResetSparks) {
-				sparks.transform.position = new Vector3 (Output.transform.position.x,Output.transform.position.y,Output.transform.position.z+1);
-				shouldResetSparks = false;
-			}
-			if (sparks != null)
-				sparks.particleSystem.enableEmission = true;
-			if (pluggedGate != null) {
-				if (Vector3.Distance(sparks.transform.position,pluggedGate.getInputPos(side)) > 0.14f)
-					sparks.transform.position = Vector3.Lerp(sparks.transform.position,pluggedGate.getInputPos(side),Time.deltaTime);
-				else
-					sparks.transform.position = new Vector3 (Output.transform.position.x,Output.transform.position.y,Output.transform.position.z+1);
-			}
-		}
-		else if (sparks != null && sparks.particleSystem.enableEmission) {
-			shouldResetSparks = true;
-			sparks.particleSystem.enableEmission = false;
+	}
+
+	public void CablesShouldFollowTargets(bool value) {
+		foreach (Cable cable in cables) {
+			cable.cableShouldFollowTargets = value;
+			cable.shouldAnimate = !value;
+			cable.shouldReset = true;
 		}
 	}
 
-	void updatePluggedGates() {
-		if (side == "left")
-			pluggedGate.input1 = output;
-		if (side == "right")
-			pluggedGate.input2 = output;
-	}
-	
-	public void plugIntoGate(LogicGate gate, string newSide) {
-		enableCable ();
-		plugCableInGate(gate, newSide);
-		pluggedGate = gate;
-		side = newSide;
-	}
-	
-	public void unplugFromGate() {
-		resetCable();
-		pluggedGate = null;
-		side = "none";
-	}
-
-	public void forceUnplugFromGate() {
-		if (pluggedGate != null) {
-			pluggedGate.powerReset(side);
+	void UpdatePluggedGates() {
+		for (int i = 0; i < cables.Count; i++) {
+			if (pluggedSides[i] == "left")
+				pluggedGates[i].input1 = output;
+			if (pluggedSides[i] == "right")
+				pluggedGates[i].input2 = output;
 		}
-		pluggedGate = null;
-		side = "none";
-		resetCable();
 	}
 
-	public void enableCable() {
-		cableShouldFollowMouse = true;
-		cable.SetPosition (1, Vector3.zero);
-		cable.enabled = true;
+	public void FlipOutput() {
+		output = !output;
+		foreach (Cable cable in cables)
+			cable.signal = output;
+	}
+
+	public void SetOutput(bool value) {
+		output = value;
+		foreach (Cable cable in cables)
+			cable.signal = output;
+	}
+
+	public void NeedNewCable() {
+		GameObject tempCable = (GameObject)Instantiate(Resources.Load("Cable", typeof(GameObject)),Camera.main.ScreenToWorldPoint(Input.mousePosition),Quaternion.identity);
+		newCable = tempCable.GetComponent<Cable>();
+		newCable.transform.parent = transform;
+		newCable.SetupNewCable(this);
+	}
+
+	public void DestroyNewCable() {
+		GameObject.Destroy(newCable.gameObject);
+		newCable = null;
+	}
+
+	public void PlugIntoGate(LogicGate gate, string newSide) {
+		pluggedGates.Add(gate);
+		pluggedSides.Add(newSide);
+		newCable.Connect(this,gate,newSide);
+		newCable.shouldAnimate = true;
+		cables.Add(newCable);
+		newCable = null;
 	}
 	
-	public void plugCableInGate(LogicGate otherGate, string side) {
-		cableShouldFollowMouse = false;
-		if (output)
-			cable.material.color = Color.cyan;
-		else
-			cable.material.color = Color.magenta;
-		target = otherGate;
-		if (side == "left")
-			cable.SetPosition(1,otherGate.getInputPos(side));
-		if (side == "right")
-			cable.SetPosition(1,otherGate.getInputPos(side));
+	public void UnplugFromGate(LogicGate gate) {
+		int index = pluggedGates.IndexOf(gate);
+		pluggedGates.RemoveAt(index);
+		pluggedSides.RemoveAt(index);
+		List<Cable> shouldRemove = new List<Cable>();
+		foreach (Cable cable in cables) {
+			if (cable.GateB == gate) {
+				shouldRemove.Add(cable);
+			}
+		}
+		foreach (Cable cable in shouldRemove) {
+			cables.Remove(cable);
+			GameObject.Destroy(cable.gameObject);
+		}
+		shouldRemove = null;
 	}
-	
-	public void resetCable() {
-		cableShouldFollowMouse = false;
-		cable.enabled = false;
+
+	public void ForceUnplugFromGate(LogicGate gate) {
+		int index = pluggedGates.IndexOf(gate);
+		pluggedGates.RemoveAt(index);
+		pluggedSides.RemoveAt(index);
+		foreach (Cable cable in cables) {
+			if (cable.GateB == gate) {
+				cables.Remove(cable);
+				GameObject.Destroy(cable);
+			}
+		}
+	}
+
+	public void RemoveCable(LogicGate gate) {
+		foreach (Cable cable in cables) {
+			if (cable.GateB == gate) {
+				cables.Remove(cable);
+				GameObject.Destroy(cable);
+			}
+		}
+	}
+
+	public Vector3 GetOutputPos() {
+		return new Vector3 (Output.transform.position.x, Output.transform.position.y-0.02f, Output.transform.position.z + 1);
 	}
 
 	public Color HexToColor(string hex) {
