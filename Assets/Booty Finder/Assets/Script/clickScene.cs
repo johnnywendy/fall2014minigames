@@ -2,13 +2,12 @@
 using System.Collections;
 
 public class clickScene : MonoBehaviour {
-
-	GameObject background;
+	
 	public string treasureIsIn;
+	public GameObject c;
 
 	// Use this for initialization
 	void Start () {
-		//GameObject.FindWithTag ("explosion").particleSystem.enableEmission = false;
 	}
 	
 	// Update is called once per frame
@@ -29,9 +28,30 @@ public class clickScene : MonoBehaviour {
 	}
 	
 	void treasureClick() {
-		//GameObject.FindWithTag("explosion").particleSystem.enableEmission = true;
+		GameObject alert = (GameObject)Instantiate(Resources.Load("Alert", typeof(GameObject)),Vector3.zero,Quaternion.identity);
+		alert.transform.parent = c.transform;
+		alert.transform.localScale = new Vector3(1,1,1);
+		alert.transform.localPosition = new Vector3(0,0,0);
+		AlertBox alertBox = alert.GetComponent<AlertBox>();
+		alertBox.title = "Winner!";
+		alertBox.message = "You figured out where the treasure is!";
+		alertBox.leftButtonText = "Go back to Finder Menu";
+		alertBox.rightButtonText = "Go back to Main Menu";
+		alertBox.SetLeftAction ("loadscene","bootyMenu");
+		alertBox.SetRightAction ("loadscene","MainMenu");
 	}
 
 	void notTreasureClick() {
+		GameObject alert = (GameObject)Instantiate(Resources.Load("Alert", typeof(GameObject)),Vector3.zero,Quaternion.identity);
+		alert.transform.parent = c.transform;
+		alert.transform.localScale = new Vector3(1,1,1);
+		alert.transform.localPosition = new Vector3(0,0,0);
+		AlertBox alertBox = alert.GetComponent<AlertBox>();
+		alertBox.title = "Sorry!";
+		alertBox.message = "The treasure wasn't there. Oops. Sorry. Try again.";
+		alertBox.leftButtonText = "Go back to Finder Menu";
+		alertBox.rightButtonText = "Go back to Main Menu";
+		alertBox.SetLeftAction ("loadscene","bootyMenu");
+		alertBox.SetRightAction ("loadscene","MainMenu");
 	}
 }
