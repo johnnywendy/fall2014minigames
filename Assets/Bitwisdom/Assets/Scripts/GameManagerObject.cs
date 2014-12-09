@@ -143,6 +143,7 @@ public class GameManagerObject : MonoBehaviour {
 			GameObject alert = (GameObject)Instantiate(Resources.Load("Alert", typeof(GameObject)),Vector3.zero,Quaternion.identity);
 			alert.transform.parent = c.transform;
 			alert.transform.localScale = new Vector3(1,1,1);
+			alert.transform.localPosition = new Vector3(0,0,0);
 			AlertBox alertBox = alert.GetComponent<AlertBox>();
 			alertBox.title = "Syntax Error";
 			alertBox.message = "There was an issue with the equation you entered. Please try again.";
@@ -182,6 +183,7 @@ public class GameManagerObject : MonoBehaviour {
 			GameObject alert = (GameObject)Instantiate(Resources.Load("Alert", typeof(GameObject)),Vector3.zero,Quaternion.identity);
 			alert.transform.parent = c.transform;
 			alert.transform.localScale = new Vector3(1,1,1);
+			alert.transform.localPosition = new Vector3(0,0,0);
 			AlertBox alertBox = alert.GetComponent<AlertBox>();
 			alertBox.title = "Correct!";
 			alertBox.message = "You got it right!";
@@ -193,6 +195,7 @@ public class GameManagerObject : MonoBehaviour {
 			GameObject alert = (GameObject)Instantiate(Resources.Load("Alert", typeof(GameObject)),Vector3.zero,Quaternion.identity);
 			alert.transform.parent = c.transform;
 			alert.transform.localScale = new Vector3(1,1,1);
+			alert.transform.localPosition = new Vector3(0,0,0);
 			AlertBox alertBox = alert.GetComponent<AlertBox>();
 			alertBox.title = "Incorrect";
 			alertBox.message = "That wasn't quite right";
