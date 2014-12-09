@@ -5,9 +5,11 @@ public class clickScene : MonoBehaviour {
 	
 	public string treasureIsIn;
 	public GameObject c;
+	public ParticleSystem explosion;
 
 	// Use this for initialization
 	void Start () {
+		explosion.Stop ();
 	}
 	
 	// Update is called once per frame
@@ -39,6 +41,7 @@ public class clickScene : MonoBehaviour {
 		alertBox.rightButtonText = "Go back to Main Menu";
 		alertBox.SetLeftAction ("loadscene","bootyMenu");
 		alertBox.SetRightAction ("loadscene","MainMenu");
+		explosion.Play ();
 	}
 
 	void notTreasureClick() {
