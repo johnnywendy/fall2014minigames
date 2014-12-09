@@ -11,6 +11,7 @@ public class ButtonTest : MonoBehaviour {
 	public Text hintTextB;
 	public Text hinttextC;
 	public Text hinttextD;
+	//public AudioSource audioSound;
 
 	//public Tex
 	public int score = 0;
@@ -24,8 +25,9 @@ public class ButtonTest : MonoBehaviour {
 		Debug.Log (slider.value.ToString ());
 	}
 	
-	public void LoadScene(int level) {
-		Application.LoadLevel (level);
+	public void LoadScene(string sceneName) {
+		//audioSound.Play();
+		Application.LoadLevel (sceneName);
 	}
 
 	public void RightAnswer(Button button) {
