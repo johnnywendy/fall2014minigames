@@ -39,9 +39,15 @@ public class LGManager_1 : MonoBehaviour {
 		List<bool> row1 = new List<bool>() {false,true};
 		List<bool> row2 = new List<bool>() {true,false};
 		List<List<bool>> tble = new List<List<bool>>() {row1,row2};
+
+		/*List<bool> row1 = new List<bool>() {false,false,false};
+		List<bool> row2 = new List<bool>() {true,false,false};
+		List<bool> row3 = new List<bool>() {true,true,true};
+		List<bool> row4 = new List<bool>() {false,true,false};
+		List<List<bool>> tble = new List<List<bool>>() {row1,row2,row3,row4};*/
 		SetupNewLevel(tble);
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
 		if (isHoldingObj) {
@@ -372,9 +378,24 @@ public class LGManager_1 : MonoBehaviour {
 					correct = false;
 			}
 		}
-		if (correct)
+		if (correct) {
 			Debug.Log("CORRECT");
-		else
+			GameObject alert = (GameObject)Instantiate(Resources.Load("Alert", typeof(GameObject)),Vector3.zero,Quaternion.identity);
+			AlertBox alertBox = alert.GetComponent<AlertBox>();
+			alertBox.title = "Correct";
+			alertBox.message = "Congratulations, you just created a NOT gate.";
+			alertBox.rightButtonText = "NEXT";
+			alertBox.SetLeftAction("destroy");
+			alertBox.SetRightAction("destroy");
+		}
+		else {
 			Debug.Log("INCORRECT");
+			GameObject alert = (GameObject)Instantiate(Resources.Load("Alert", typeof(GameObject)),Vector3.zero,Quaternion.identity);
+			AlertBox alertBox = alert.GetComponent<AlertBox>();
+			alertBox.title = "Incorrect";
+			alertBox.message = "Hmm, this doesn't look correct, try again.";
+			alertBox.SetLeftAction("destroy");
+			alertBox.SetRightAction("destroy");
+		}
 	}
 }

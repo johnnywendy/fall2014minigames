@@ -73,7 +73,8 @@ public class AlertBox : MonoBehaviour {
 		Vector3 scale = transform.localScale;
 		Quaternion rotation = transform.localRotation;
 		transform.parent = GameObject.Find ("Canvas").transform;
-		transform.position = new Vector3(pos.x,pos.y,Camera.main.transform.localPosition.z+1f);
+		transform.position = Camera.main.ScreenToWorldPoint( new Vector3(Screen.width/2, Screen.height/2, 0f));
+		transform.position = new Vector3(transform.position.x,transform.position.y,Camera.main.transform.localPosition.z+1f);
 		transform.localScale = scale;
 		transform.localRotation = rotation;
 		rightButton = transform.FindChild("RightButton").transform.FindChild("Text").GetComponent<Text>() as Text;
@@ -174,10 +175,14 @@ public class AlertBox : MonoBehaviour {
 			Application.LoadLevel(_scene2);
 			return;
 		}
-		if (passParams2)
+		if (passParams2) {
+			GameObject.Destroy(gameObject);
 			_target2.GetComponent(_component2).SendMessage(_action2, _parameter2);
-		else
+		}
+		else {
+			GameObject.Destroy(gameObject);
 			_target2.GetComponent(_component2).SendMessage(_action2);
+		}
 	}
 
 }

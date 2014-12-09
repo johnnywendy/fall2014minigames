@@ -47,7 +47,7 @@ public class CC_1_Manager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (isDragging && firstUp) {
-			target.localPosition = Input.mousePosition - new Vector3(550,320,1);
+			target.localPosition = Input.mousePosition - new Vector3(640,360,1);
 		}
 		if (Input.GetMouseButtonDown (0)) {
 			if (isDragging && firstUp) {
