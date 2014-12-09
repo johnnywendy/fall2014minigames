@@ -8,8 +8,7 @@ public class clickScene : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		background = GameObject.FindWithTag("backgroundNotChest");
-		background.renderer.material.color = new Color(2f,2f,2f);
+		//GameObject.FindWithTag ("explosion").particleSystem.enableEmission = false;
 	}
 	
 	// Update is called once per frame
@@ -30,10 +29,9 @@ public class clickScene : MonoBehaviour {
 	}
 	
 	void treasureClick() {
-		background.renderer.material.color = new Color(10f,10f,10f);
+		//GameObject.FindWithTag("explosion").particleSystem.enableEmission = true;
 	}
 
 	void notTreasureClick() {
-		background.renderer.material.color = new Color(0f,0f,0f);
 	}
 }
