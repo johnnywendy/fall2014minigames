@@ -23,17 +23,25 @@ public class LGManager_1 : MonoBehaviour {
 
 	// Level Management
 	private List<List<bool>> truthTable = null;
-	private List<List<bool>> goalTable = null;
 	private List<PowerSource> powerSources = new List<PowerSource> {};
+	private GoalGate goalGate = null;
 
 	// Use this for initialization
 	void Start () {
 		screenWidth = Screen.width;
+		goalGate = GameObject.Find("GoalBlock").GetComponent<GoalGate>() as GoalGate;
 
 		for (int i = 0; i < InvAmounts.Length; i++) {
 			buttons[i].SetActive(InvEnabled[i]);
 			buttons[i].transform.FindChild("Amount").GetComponent<Text>().text = InvAmounts[i].ToString();
 		}
+
+		List<bool> row1 = new List<bool>() {false,false,false};
+		List<bool> row2 = new List<bool>() {false,true,true};
+		List<bool> row3 = new List<bool>() {true,false,true};
+		List<bool> row4 = new List<bool>() {true,true,true};
+		List<List<bool>> tble = new List<List<bool>>() {row1,row2,row3,row4};
+		SetupNewLevel(tble);
 	}
 	
 	// Update is called once per frame
@@ -48,7 +56,6 @@ public class LGManager_1 : MonoBehaviour {
 				if (isHoldingObj) {
 					isHoldingObj = false;
 					LogicGate gate = heldObj.GetComponent<LogicGate> ();
-					gate.RenderSparks(true);
 					if (gate != null) {
 						gate.enabled = true;
 						gate.WasPutDown();
@@ -84,18 +91,16 @@ public class LGManager_1 : MonoBehaviour {
 							Debug.Log("> Output selected");
 							plugObj = hit.collider.transform.parent.gameObject;
 							if (hit.collider.tag == "IO") {
-								plugObj.GetComponent<LogicGate>().unplugFromGate();
-								plugObj.GetComponent<LogicGate>().enableCable();
+								plugObj.GetComponent<LogicGate>().NeedNewCable();
 							}
 							else if (hit.collider.tag == "Power") {
 								isHoldingPow = true;
-								plugObj.GetComponent<PowerSource>().forceUnplugFromGate();
-								plugObj.GetComponent<PowerSource>().enableCable();
+								plugObj.GetComponent<PowerSource>().NeedNewCable();
 							}
 							isConnectingObj = true;
 						}
 						else if (hit.collider.tag == "Power") {
-							hit.collider.gameObject.GetComponent<PowerSource>().flipOutput = true;
+							hit.collider.gameObject.GetComponent<PowerSource>().FlipOutput();
 						}
 						if (hit.collider.transform.gameObject.tag == "Gate") {
 							HoldObject(hit.collider.transform.gameObject);
@@ -111,15 +116,13 @@ public class LGManager_1 : MonoBehaviour {
 							isHoldingPow = false;
 							PowerSource pow = plugObj.GetComponent<PowerSource>();
 
-							if (pow.pluggedIn == false) {
-								if (hit.collider.transform.gameObject.name == "Input1") {
-									socketObj.transform.parent.GetComponent<LogicGate>().hookUpPowerSource(pow,"left");
-									pow.plugIntoGate(socketObj.transform.parent.GetComponent<LogicGate>(), "left");
-								}
-								if (hit.collider.transform.gameObject.name == "Input2") {
-									socketObj.transform.parent.GetComponent<LogicGate>().hookUpPowerSource(pow,"right");
-									pow.plugIntoGate(socketObj.transform.parent.GetComponent<LogicGate>(), "right");
-								}
+							if (hit.collider.transform.gameObject.name == "Input1") {
+								socketObj.transform.parent.GetComponent<LogicGate>().HookUpPowerSource(pow,"left");
+								pow.PlugIntoGate(socketObj.transform.parent.GetComponent<LogicGate>(), "left");
+							}
+							if (hit.collider.transform.gameObject.name == "Input2") {
+								socketObj.transform.parent.GetComponent<LogicGate>().HookUpPowerSource(pow,"right");
+								pow.PlugIntoGate(socketObj.transform.parent.GetComponent<LogicGate>(), "right");
 							}
 						}
 						else if (plugObj.tag == "Gate" && hit.collider.tag != "Goal") {
@@ -127,23 +130,24 @@ public class LGManager_1 : MonoBehaviour {
 							socketObj = hit.collider.transform.gameObject;
 							isConnectingObj = false;
 							if (hit.collider.transform.gameObject.name == "Input1")
-								plugObj.GetComponent<LogicGate>().plugIntoGate(socketObj.transform.parent.GetComponent<LogicGate>(),"left");
+								plugObj.GetComponent<LogicGate>().PlugIntoGate(socketObj.transform.parent.GetComponent<LogicGate>(),"left");
 							if (hit.collider.transform.gameObject.name == "Input2")
-								plugObj.GetComponent<LogicGate>().plugIntoGate(socketObj.transform.parent.GetComponent<LogicGate>(),"right");
+								plugObj.GetComponent<LogicGate>().PlugIntoGate(socketObj.transform.parent.GetComponent<LogicGate>(),"right");
 						}
 						else if (hit.collider.tag == "Goal") {
 							socketObj = hit.collider.transform.gameObject;
 							isConnectingObj = false;
-							plugObj.GetComponent<LogicGate>().plugIntoGoal(socketObj.transform.parent.GetComponent<GoalGate>());
+							plugObj.GetComponent<LogicGate>().PlugIntoGoal(socketObj.transform.parent.GetComponent<GoalGate>());
 						}
 					}
 				}
 				else if (isConnectingObj) {
 					if (isHoldingPow)
-						plugObj.GetComponent<PowerSource>().resetCable();
+						plugObj.GetComponent<PowerSource>().DestroyNewCable();
 					else
-						plugObj.GetComponent<LogicGate>().resetCable();
+						plugObj.GetComponent<LogicGate>().DestroyNewCable();
 					isConnectingObj = false;
+					isHoldingPow = false;
 				}
 			}
 		}
@@ -176,10 +180,9 @@ public class LGManager_1 : MonoBehaviour {
 	public void HoldObject(GameObject obj) {
 		isHoldingObj = true;
 		LogicGate gate = obj.GetComponent<LogicGate> ();
-		gate.RenderSparks (false);
 		if (gate != null) {
-			gate.shouldDisable(true);
 			gate.WasPickedUp();
+			gate.shouldDisable(true);
 			heldObj = obj;
 		}
 	}
@@ -245,46 +248,135 @@ public class LGManager_1 : MonoBehaviour {
 		truthTable = newTable;
 
 		int numberOfSources = truthTable[0].Count-1;
-		switch (numberOfSources) {
-			case 0:
-				break;
-			case 1:
-				GameObject powerSource1 = (GameObject)Instantiate(Resources.Load("PowerSource", typeof(GameObject)),new Vector3(-4.8f,4f,-0.5f),Quaternion.identity);
-				powerSources.Add(powerSource1.GetComponent<PowerSource>());
-				break;
-			case 2:
-				GameObject powerSource2 = (GameObject)Instantiate(Resources.Load("PowerSource", typeof(GameObject)),new Vector3(-4.8f,1.7f,-0.5f),Quaternion.identity);
-				powerSources.Add(powerSource2.GetComponent<PowerSource>());
-				break;
-			case 3:
-				GameObject powerSource3 = (GameObject)Instantiate(Resources.Load("PowerSource", typeof(GameObject)),new Vector3(-4.8f,-0.6f,-0.5f),Quaternion.identity);
-				powerSources.Add(powerSource3.GetComponent<PowerSource>());
-				break;
+		if (numberOfSources == 1) {
+			GameObject powerSource1 = (GameObject)Instantiate(Resources.Load("PowerSource", typeof(GameObject)),new Vector3(-4.8f,1.7f,-0.5f),Quaternion.identity);
+			powerSource1.transform.localEulerAngles = new Vector3(0,0,-90);
+			powerSources.Add(powerSource1.GetComponent<PowerSource>());
+		}
+		if (numberOfSources == 2) {
+			GameObject powerSource1 = (GameObject)Instantiate(Resources.Load("PowerSource", typeof(GameObject)),new Vector3(-4.8f,2.85f,-0.5f),Quaternion.identity);
+			powerSource1.transform.localEulerAngles = new Vector3(0,0,-90);
+			powerSources.Add(powerSource1.GetComponent<PowerSource>());
+			GameObject powerSource2 = (GameObject)Instantiate(Resources.Load("PowerSource", typeof(GameObject)),new Vector3(-4.8f,0.55f,-0.5f),Quaternion.identity);
+			powerSource2.transform.localEulerAngles = new Vector3(0,0,-90);
+			powerSources.Add(powerSource2.GetComponent<PowerSource>());
+		}
+		if (numberOfSources == 3) {
+			GameObject powerSource1 = (GameObject)Instantiate(Resources.Load("PowerSource", typeof(GameObject)),new Vector3(-4.8f,4f,-0.5f),Quaternion.identity);
+			powerSource1.transform.localEulerAngles = new Vector3(0,0,-90);
+			powerSources.Add(powerSource1.GetComponent<PowerSource>());
+			GameObject powerSource2 = (GameObject)Instantiate(Resources.Load("PowerSource", typeof(GameObject)),new Vector3(-4.8f,1.7f,-0.5f),Quaternion.identity);
+			powerSource2.transform.localEulerAngles = new Vector3(0,0,-90);
+			powerSources.Add(powerSource2.GetComponent<PowerSource>());
+			GameObject powerSource3 = (GameObject)Instantiate(Resources.Load("PowerSource", typeof(GameObject)),new Vector3(-4.8f,-0.6f,-0.5f),Quaternion.identity);
+			powerSource3.transform.localEulerAngles = new Vector3(0,0,-90);
+			powerSources.Add(powerSource3.GetComponent<PowerSource>());
 		}
 	}
 
-	/*public void UpdateTruthTable(List<bool> currentScenario, bool currentOutput) {
+	public void CheckAnswer() {
+		List<List<bool>> currentTable = new List<List<bool>>();
+		foreach (PowerSource input in powerSources) {
+			input.SetOutput(false);
+		}
+		if (powerSources.Count == 1) {
+			currentTable.Add(GetRow());
+			powerSources[0].FlipOutput();
+			currentTable.Add(GetRow());
+		}
+		if (powerSources.Count == 2) {
+			currentTable.Add(GetRow());
+			powerSources[0].FlipOutput();
+			currentTable.Add(GetRow());
+			powerSources[1].FlipOutput();
+			currentTable.Add(GetRow());
+			powerSources[0].FlipOutput();
+			currentTable.Add(GetRow());
+		}
+		if (powerSources.Count == 3) {
+			currentTable.Add(GetRow());
+			powerSources[0].FlipOutput();
+			currentTable.Add(GetRow());
+			powerSources[1].FlipOutput();
+			currentTable.Add(GetRow());
+			powerSources[2].FlipOutput();
+			currentTable.Add(GetRow());
+			powerSources[0].FlipOutput();
+			currentTable.Add(GetRow());
+			powerSources[1].FlipOutput();
+			currentTable.Add(GetRow());
+			powerSources[0].FlipOutput();
+			currentTable.Add(GetRow());
+			powerSources[0].FlipOutput();
+			powerSources[1].FlipOutput();
+			powerSources[2].FlipOutput();
+			currentTable.Add(GetRow());
+		}
+		CheckCompletion(currentTable);
+	}
+
+	List<bool> GetRow() {
+		List<bool> currentScenario = new List<bool>();
+		foreach (PowerSource input in powerSources)
+			currentScenario.Add (input.output);
+		currentScenario.Add(goalGate.input);
+		return currentScenario;
+	}
+
+	public void CheckScenario() {
+		List<bool> currentScenario = new List<bool>();
+		foreach (PowerSource input in powerSources)
+			currentScenario.Add (input.output);
+		UpdateTruthTable(currentScenario,goalGate.input);
+	}
+
+	public void UpdateTruthTable(List<bool> currentScenario, bool currentOutput) {
 		int scenarioIndex = 0;
 		if (currentScenario[0] == true)
 			scenarioIndex += 1;
-		if (currentScenario[1] == true)
-			scenarioIndex += 10;
-		if (currentScenario[2] == true)
-			scenarioIndex += 100;
+		if (currentScenario.Count == 2)
+			if (currentScenario[1] == true)
+				scenarioIndex += 10;
+		if (currentScenario.Count == 3)
+			if (currentScenario[2] == true)
+				scenarioIndex += 100;
 		List<int> indexMap = new List<int> {0,1,10,11,100,101,110,111};
 		int actualIndex = -1;
 		for (int i = 0; i < indexMap.Count; i++)
 			if (indexMap[i] == scenarioIndex)
 				actualIndex = indexMap[i];
-		if (actualIndex > -1)
+		if (actualIndex > -1) {
+			currentScenario.Add(currentOutput);
 			CheckScenarioValidity(actualIndex,currentScenario);
+		}
 	}
 
-	void CheckScenarioValidity(int index,List<bool> currentScenario, bool currentOutput) {
-		currentScenario.Add(currentOutput);
-		if (truthTable[index] == currentScenario)
-			return true;
+	void CheckScenarioValidity(int index,List<bool> currentScenario) {
+		bool correct = true;
+		for (int i = 0; i < currentScenario.Count; i++) {
+			Debug.Log(truthTable[index][i]+" --- "+currentScenario[i]);
+		}
+		for (int i = 0; i < currentScenario.Count; i++) {
+			if (truthTable[index][i] != currentScenario[i])
+				correct = false;
+		}
+		if (correct)
+			Debug.Log("CORRECT");
 		else
-			return false;
-	}*/
+			Debug.Log("INCORRECT");
+	}
+
+	void CheckCompletion(List<List<bool>> currentAnswer) {
+		bool correct = true;
+		for (int i = 0; i < currentAnswer.Count; i++) {
+			for (int j = 0; j < currentAnswer[i].Count; j++) {
+				if (truthTable[i][j] != currentAnswer[i][j])
+					correct = false;
+			}
+		}
+		if (correct)
+			Debug.Log("CORRECT");
+		else
+			Debug.Log("INCORRECT");
+	}
 }
