@@ -12,6 +12,7 @@ public class BinaryGame : MonoBehaviour
 		private bool gameoverbool = false;
 		public GameObject score;
 		public GameObject time;
+		private int numOfRows;
 		Text scoretxt;
 		Text timetxt;
 		float scorenum = 0;
@@ -21,6 +22,7 @@ public class BinaryGame : MonoBehaviour
 		
 		void Start ()
 		{
+				numOfRows = 5;
 				BinaryBlockRow temp;
 				for (int a =0; a<blockrows.Length; ++a) {
 						temp = gameObject.AddComponent<BinaryBlockRow> ();
@@ -79,10 +81,10 @@ public class BinaryGame : MonoBehaviour
 						}
 
 						if (hard) {
-								if (blockrows.Length <= 0) {
+								if (numOfRows <= 0) {
 										gameOver ();					
 								}
-						} else if (timenum <= 0 || blockrows.Length <= 0) {
+						} else if (timenum <= 0 || numOfRows <= 0) {
 								gameOver ();
 						}
 				} else {
@@ -116,6 +118,7 @@ public class BinaryGame : MonoBehaviour
 
 		private void shiftRows ()
 		{
+				numOfRows--;
 				bool flag = true;
 				int num = 0;
 				for (int a =0; a<blockrows.Length && flag; ++a) {
