@@ -176,9 +176,9 @@ public class GameManagerObject : MonoBehaviour {
 		if (i1 == i2) {
 			if (PlayerPrefs.GetInt ("BW_PuzzleLevelUnlocked") == current_lvl)
 			{
-				PlayerPrefs.SetInt ("BW_PuzzleLevelUnlocked", ++current_lvl);
+				PlayerPrefs.SetInt ("BW_PuzzleLevelUnlocked", current_lvl+1);
 			}
-			PlayerPrefs.SetInt ("BW_CurrentLevel",current_lvl);
+			PlayerPrefs.SetInt ("BW_CurrentLevel",++current_lvl);
 			GameObject alert = (GameObject)Instantiate(Resources.Load("Alert", typeof(GameObject)),Vector3.zero,Quaternion.identity);
 			alert.transform.parent = c.transform;
 			alert.transform.localScale = new Vector3(1,1,1);
