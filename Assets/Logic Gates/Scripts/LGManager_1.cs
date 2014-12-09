@@ -36,11 +36,9 @@ public class LGManager_1 : MonoBehaviour {
 			buttons[i].transform.FindChild("Amount").GetComponent<Text>().text = InvAmounts[i].ToString();
 		}
 
-		List<bool> row1 = new List<bool>() {false,false,false};
-		List<bool> row2 = new List<bool>() {false,true,true};
-		List<bool> row3 = new List<bool>() {true,false,true};
-		List<bool> row4 = new List<bool>() {true,true,true};
-		List<List<bool>> tble = new List<List<bool>>() {row1,row2,row3,row4};
+		List<bool> row1 = new List<bool>() {false,true};
+		List<bool> row2 = new List<bool>() {true,false};
+		List<List<bool>> tble = new List<List<bool>>() {row1,row2};
 		SetupNewLevel(tble);
 	}
 	
