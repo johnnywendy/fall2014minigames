@@ -302,11 +302,14 @@ public class LogicGate : MonoBehaviour {
 			pluggedGates[index].input1 = false;
 			pluggedGates[index].leftConnectedGate = null;
 		}
-		pluggedGates[index] = null;
-		pluggedSides[index] = "none";
+		pluggedGates.RemoveAt(index);
+		pluggedSides.RemoveAt(index);
 		List<Cable> shouldRemove = new List<Cable>();
 		foreach (Cable cable in cables) {
-			if (cable.GateB == gate) {
+			if (cable.GateB == gate && cable.GateA == this) {
+				shouldRemove.Add(cable);
+			}
+			else if (cable.GoalB == gate && cable.GateA == this) {
 				shouldRemove.Add(cable);
 			}
 		}
@@ -314,7 +317,6 @@ public class LogicGate : MonoBehaviour {
 			cables.Remove(cable);
 			GameObject.Destroy(cable.gameObject);
 		}
-		shouldRemove = null;
 	}
 
 	public void powerReset(string side) {
