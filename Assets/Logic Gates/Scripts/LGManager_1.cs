@@ -22,9 +22,20 @@ public class LGManager_1 : MonoBehaviour {
 	private int screenWidth = 0;
 
 	// Level Management
+	public int level = 1;
 	private List<List<bool>> truthTable = null;
 	private List<PowerSource> powerSources = new List<PowerSource> {};
 	private GoalGate goalGate = null;
+
+	List<List<bool>> level1;
+	int[] inv1 = new int[] {0,0,0,2,0,0,0};
+	string message1 = "Congratulations, you just created a NOT gate.";
+	List<List<bool>> level2;
+	int[] inv2 = new int[] {0,0,2,2,0,0,0};
+	string message2 = "Congratulations, you just created an AND gate.";
+	List<List<bool>> level3;
+	int[] inv3 = new int[] {2,0,2,2,0,0,0};
+	string message3 = "Congratulations, you just created an OR gate.";
 
 	// Use this for initialization
 	void Start () {
@@ -38,14 +49,21 @@ public class LGManager_1 : MonoBehaviour {
 
 		List<bool> row1 = new List<bool>() {false,true};
 		List<bool> row2 = new List<bool>() {true,false};
-		List<List<bool>> tble = new List<List<bool>>() {row1,row2};
+		level1 = new List<List<bool>>() {row1,row2};
 
-		/*List<bool> row1 = new List<bool>() {false,false,false};
-		List<bool> row2 = new List<bool>() {true,false,false};
+		row1 = new List<bool>() {false,false,false};
+		row2 = new List<bool>() {true,false,false};
 		List<bool> row3 = new List<bool>() {true,true,true};
 		List<bool> row4 = new List<bool>() {false,true,false};
-		List<List<bool>> tble = new List<List<bool>>() {row1,row2,row3,row4};*/
-		SetupNewLevel(tble);
+		level2 = new List<List<bool>>() {row1,row2,row3,row4};
+
+		row1 = new List<bool>() {false,false,false};
+		row2 = new List<bool>() {true,false,true};
+		row3 = new List<bool>() {true,true,true};
+		row4 = new List<bool>() {false,true,false};
+		level3 = new List<List<bool>>() {row1,row2,row3,row4};
+
+		SetupNewLevel(level);
 	}
 
 	// Update is called once per frame
@@ -244,12 +262,41 @@ public class LGManager_1 : MonoBehaviour {
 	}
 
 	void ClearFloor() {
-		// clear all items before setting up new level
+		foreach (GameObject gate in GameObject.FindGameObjectsWithTag("Gate")) {
+			LogicGate lGate = gate.GetComponent<LogicGate>();
+			lGate.resetConnections();
+			int index = lGate.logicMode;
+			InvAmounts[index]++;
+			buttons[index].transform.FindChild("Amount").GetComponent<Text>().text = InvAmounts[index].ToString();
+			Destroy(gate);
+		}
+		foreach (PowerSource pow in powerSources) {
+			foreach (Cable cable in pow.cables) {
+				GameObject.Destroy(cable.gameObject);
+			}
+			GameObject.Destroy(pow.gameObject);
+		}
 	}
 	
-	public void SetupNewLevel(List<List<bool>> newTable) {
+	public void SetupNewLevel(int level) {
 		ClearFloor ();
-		truthTable = newTable;
+		if (level == 1) {
+			truthTable = level1;
+			InvAmounts = inv1;
+		}
+		if (level == 2) {
+			truthTable = level2;
+			InvAmounts = inv2;
+		}
+		if (level == 3) {
+			truthTable = level3;
+			InvAmounts = inv3;
+		}
+
+		for (int i = 0; i < InvAmounts.Length; i++) {
+			buttons[i].SetActive(InvEnabled[i]);
+			buttons[i].transform.FindChild("Amount").GetComponent<Text>().text = InvAmounts[i].ToString();
+		}
 
 		int numberOfSources = truthTable[0].Count-1;
 		if (numberOfSources == 1) {
@@ -383,10 +430,22 @@ public class LGManager_1 : MonoBehaviour {
 			GameObject alert = (GameObject)Instantiate(Resources.Load("Alert", typeof(GameObject)),Vector3.zero,Quaternion.identity);
 			AlertBox alertBox = alert.GetComponent<AlertBox>();
 			alertBox.title = "Correct";
-			alertBox.message = "Congratulations, you just created a NOT gate.";
-			alertBox.rightButtonText = "NEXT";
+			if (level == 1)
+				alertBox.message = message1;
+			if (level == 2)
+				alertBox.message = message2;
+			if (level == 3)
+				alertBox.message = message3;
 			alertBox.SetLeftAction("destroy");
-			alertBox.SetRightAction("destroy");
+			level++;
+			if (level == 3) {
+				alertBox.rightButtonText = "MENU";
+				alertBox.SetRightAction("loadscene","MainMenu");
+			}
+			else {
+				alertBox.rightButtonText = "NEXT";
+				alertBox.SetRightAction(gameObject,"LGManager_1","SetupNewLevel",level);
+			}
 		}
 		else {
 			Debug.Log("INCORRECT");

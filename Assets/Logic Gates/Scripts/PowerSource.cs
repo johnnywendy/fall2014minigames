@@ -7,7 +7,7 @@ public class PowerSource : MonoBehaviour {
 	public bool power = true;
 	public List<LogicGate> pluggedGates = new List<LogicGate>();
 	public List<string> pluggedSides = new List<string>();
-	private List<Cable> cables = new List<Cable>();
+	public List<Cable> cables = new List<Cable>();
 	private Cable newCable = null;
 
 	private GameObject Output;
