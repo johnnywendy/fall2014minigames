@@ -68,6 +68,7 @@ public class GameManagerObject : MonoBehaviour {
 		num4 = new BitwiseInt(System.Convert.ToInt32 (lvlLoadout [5]), max);
 		num5 = new BitwiseInt(System.Convert.ToInt32 (lvlLoadout [6]), max);
 		target = lvlLoadout [7];
+		PlayerPrefs.SetInt ("BW_Max",max);
 
 		if ((operators / 8) == 1) {
 			_xor = true;
@@ -259,7 +260,7 @@ public class FormulaConverter
 				}
 				operatorStack.Push(token);
 			} else {
-				operandStack.Push(new BitwiseInt(System.Int32.Parse (token),PlayerPrefs.GetInt("max")));
+				operandStack.Push(new BitwiseInt(System.Int32.Parse (token),PlayerPrefs.GetInt("BW_Max")));
 			}
 			tokenIndex += 1;
 		}
