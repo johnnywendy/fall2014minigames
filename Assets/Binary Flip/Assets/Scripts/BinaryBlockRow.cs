@@ -82,7 +82,8 @@ public class BinaryBlockRow : MonoBehaviour
 		public void rowSolved (float t)
 		{
 				for (int a =0; a<8; ++a) {
-						blockarr [a].GetComponent<Image> ().color = new Color (0f, 255f, 45f);
+						if (blockarr [a] != null)
+								blockarr [a].GetComponent<Image> ().color = new Color (0f, 255f, 45f);
 				}
 				Invoke ("delete", t);
 		}
@@ -104,13 +105,17 @@ public class BinaryBlockRow : MonoBehaviour
 						goaltxtrt.localPosition = new Vector3 (txtrt.localPosition.x + txtrt.rect.width + 5, txtrt.localPosition.y, 0);
 		}
 
-		public void opacity(float timeleft){
-			for (int a =0; a<8; ++a) {
-				blockarr[0].opacity(timeleft);
-			}
-		Color tempcolor = new Vector4(rowtotal.color.r, rowtotal.color.g,rowtotal.color.b, (timeleft / 10) * 255);
-		rowtotal.color = tempcolor;
-		goaltxt.GetComponent<Text> ().color = tempcolor;
+		public void opacity (float timeleft)
+		{
+				for (int a =0; a<8; ++a) {
+						if (blockarr [a] != null)
+								blockarr [a].opacity (timeleft);
+				}
+				if (rowtotal != null && goaltxt != null) {
+						Color tempcolor = new Vector4 (rowtotal.color.r, rowtotal.color.g, rowtotal.color.b, ((5f - timeleft) / 5f));
+						rowtotal.color = tempcolor;
+						goaltxt.GetComponent<Text> ().color = tempcolor;
+				}
 		}
 
 		public void updateDifficulty (bool d)
