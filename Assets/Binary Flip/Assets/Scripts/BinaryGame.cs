@@ -7,6 +7,7 @@ public class BinaryGame : MonoBehaviour
 		public bool hard = false;
 		public bool medium = false;
 		BinaryBlockRow[] blockrows = new BinaryBlockRow[5];
+		BinaryBlockRow nextrow = new BinaryBlockRow();
 
 		bool init = false;
 		private bool gameoverbool = false;
@@ -16,15 +17,20 @@ public class BinaryGame : MonoBehaviour
 		Text timetxt;
 		float scorenum = 0;
 		float timenum = 100;
-		
-		
+
+		int rowxpos = -145;
+		int rowypos = -300;
 		
 		void Start ()
 		{
 				BinaryBlockRow temp;
-				for (int a =0; a<blockrows.Length; ++a) {
+				for (int a =0; a<blockrows.Length+1; ++a) {
 						temp = gameObject.AddComponent<BinaryBlockRow> ();
-						blockrows.SetValue (temp, a);
+			if(a!=blockrows.Length){			
+			blockrows.SetValue (temp, a);
+			}else{
+				nextrow = temp;
+			}
 				}
 
 				scoretxt = score.GetComponent<Text> ();
@@ -47,19 +53,21 @@ public class BinaryGame : MonoBehaviour
 								init = true;
 								for (int a =0; a< blockrows.Length; ++a) {
 										if (blockrows [a] != null) {
-												Vector3 tempv = new Vector3 (-100, -220 + a * 100, 0);
+												Vector3 tempv = new Vector3 (rowxpos, rowypos + a * 100, 0);
 												blockrows [a].updatePos (tempv);
 										}
 								}
 						}
-			
+						if(timenum <= 10){
+							nextrow.opacity(timenum);
+						}
 						scoretxt.text = scorenum.ToString ("0000");
 						timetxt.text = timenum.ToString ("00");
 
 
 						for (int a =0; a<blockrows.Length; ++a) {
 								if (blockrows [a] != null) {
-										Vector3 temp = new Vector3 (-100, -220 + a * 100, 0);
+										Vector3 temp = new Vector3 (rowxpos, rowypos + a * 100, 0);
 										//blockrows [a].updatePos (temp);
 
 										blockrows [a].Rowtransform.localPosition = Vector3.Lerp (blockrows [a].Rowtransform.localPosition, temp, Time.deltaTime);
@@ -103,7 +111,7 @@ public class BinaryGame : MonoBehaviour
 
 		private void gameOver(){
 			gameoverbool = true;
-			
+		init = false;
 		GameObject alert = (GameObject)Instantiate(Resources.Load("Alert", typeof(GameObject)),Vector3.zero,Quaternion.identity);
 		AlertBox alertBox = alert.GetComponent<AlertBox>();
 		alertBox.title = "Game Over";

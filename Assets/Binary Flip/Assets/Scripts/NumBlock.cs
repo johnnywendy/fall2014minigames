@@ -6,8 +6,10 @@ public class NumBlock : MonoBehaviour
 {
 		bool value = false;
 		Text txt;
+	Image img;
 		void Start ()
 		{
+		img = gameObject.GetComponent<Image> ();
 				txt = gameObject.GetComponentInChildren<Text> ();
 		}
 	
@@ -24,6 +26,10 @@ public class NumBlock : MonoBehaviour
 		void FixedUpdate ()
 		{
 		}
+		public void opacity(float timeleft){
+	//	txt.color.a = (timeleft / 10) * 255;
+	//	img.color.a = (timeleft / 10) * 255;
+	}
 
 		public void changeValue ()
 		{
