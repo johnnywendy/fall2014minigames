@@ -71,23 +71,18 @@ public class MenuStrip : MonoBehaviour {
 	}
 
 	void OnMouseEnter() {
-		if (canInteract) {
 			acceptClick = true;
 			if (isClicking)
 				myRenderer.color = HexColor.AdjustHexToColor(hexColor,-40);
-		}
 	}
 
 	void OnMouseExit() {
-		if (canInteract) {
 			acceptClick = false;
 			if (isClicking)
 				myRenderer.color = HexColor.HexToColor(hexColor);
-		}
 	}
 
 	void OnMouseDown() {
-		if (canInteract) {
 			if (allowDraggging) {
 				startPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 				offsetPos =  transform.position;
@@ -96,11 +91,9 @@ public class MenuStrip : MonoBehaviour {
 			if (!isClicking)
 				myRenderer.color = HexColor.AdjustHexToColor(hexColor,-40);
 			isClicking = true;
-		}
 	}
 
 	void OnMouseUp() {
-		if (canInteract) {
 			if (allowDraggging)
 				shouldTrack = false;
 			else if (acceptClick) {
@@ -108,7 +101,6 @@ public class MenuStrip : MonoBehaviour {
 			}
 			isClicking = false;
 			myRenderer.color = HexColor.HexToColor(hexColor);
-		}
 	}
 
 	public void ResetSensitiveVars() {

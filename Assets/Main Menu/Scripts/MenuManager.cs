@@ -104,7 +104,7 @@ public class MenuManager : MonoBehaviour {
 	}
 
 	IEnumerator InteractOn() {
-		yield return new WaitForSeconds(1f);
+		yield return new WaitForSeconds(0.6f);
 		foreach (CircleButton circle in circles)
 			circle.gameObject.SetActive(true);
 		canInteract = true;
