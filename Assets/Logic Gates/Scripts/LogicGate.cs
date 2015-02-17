@@ -6,7 +6,6 @@ public class LogicGate : MonoBehaviour {
 
 	public int mode = 0;
 	public bool rotateMode = false;
-	public float physicalRotateAmt = -90;
 	public bool preferredEditMode = false;
 	public bool disableOnStart = false;
 
@@ -32,7 +31,12 @@ public class LogicGate : MonoBehaviour {
 	private bool power1 = false;
 	private bool power2 = false;
 	private bool disableAfterStart = false;
-	private bool editMode = true;
+	private bool editMode = false;
+
+	private string hexColor;
+	private SpriteRenderer myRenderer;
+	private Shader shaderGUItext;
+	private Shader shaderSpritesDefault;
 
 	private int _logicMode = 0;
 	public int logicMode {
@@ -44,7 +48,7 @@ public class LogicGate : MonoBehaviour {
 			else
 				Input2.SetActive(true);
 			transform.FindChild("Text").GetComponent<TextMesh>().text = labels[_logicMode];
-			transform.renderer.material.color = HexToColor(colors[_logicMode]);
+			SetColor(colors[_logicMode]);
 			updateOutput();
 		}
 		get {
@@ -112,6 +116,12 @@ public class LogicGate : MonoBehaviour {
 		disableAfterStart = val;
 	}
 
+	void Awake() {
+		myRenderer = gameObject.GetComponent<SpriteRenderer>();
+		shaderGUItext = Shader.Find("GUI/Text Shader");
+		shaderSpritesDefault = Shader.Find("Sprites/Default");
+	}
+
 	// Use this for initialization
 	void Start () {
 		Input1 = transform.FindChild("Input1").gameObject;
@@ -121,10 +131,8 @@ public class LogicGate : MonoBehaviour {
 		Reset = transform.FindChild("Reset").gameObject;
 		label = transform.FindChild ("Text").GetComponent<TextMesh> ();
 
-		Input1.transform.renderer.material.color = HexToColor ("1dc6e0");
-		Input2.transform.renderer.material.color = HexToColor ("5b1de0");
-
-		transform.rotation = Quaternion.Euler (0, 0, physicalRotateAmt);
+		SetColor(Input1,"1dc6e0");
+		SetColor(Input2,"5b1de0");
 
 		if (mode != -1)
 			logicMode = mode;
@@ -157,6 +165,17 @@ public class LogicGate : MonoBehaviour {
 				logicMode = 0;
 			rotateMode = false;
 		}
+	}
+
+	public void SetColor(string hexCode) {
+		hexColor = hexCode;
+		myRenderer.material.shader = shaderGUItext;
+		myRenderer.color = HexColor.HexToColor(hexCode);
+	}
+
+	public void SetColor(GameObject obj, string hexCode) {
+		obj.GetComponent<SpriteRenderer>().material.shader = shaderGUItext;
+		obj.GetComponent<SpriteRenderer>().color = HexColor.HexToColor(hexCode);
 	}
 
 	public void SetEditMode(bool val) {
@@ -220,15 +239,15 @@ public class LogicGate : MonoBehaviour {
 		if (power_output) {
 			if (output) {
 				Debug.Log(">> True!");
-				Output.transform.renderer.material.color = HexToColor("1a991c");
+				SetColor(Output,"1a991c");
 			} 
 			else {
 				Debug.Log(">> False.");
-				Output.transform.renderer.material.color = HexToColor("f00c0c");
+				SetColor(Output,"f00c0c");
 			}
 		}
 		else {
-			Output.transform.renderer.material.color = HexToColor("9d9d9d");
+			SetColor(Output,"9d9d9d");
 		}
 		if (pluggedGates.Count > 0) {
 			for (int i = 0; i < pluggedGates.Count; i++) {
@@ -375,25 +394,5 @@ public class LogicGate : MonoBehaviour {
 
 	public Vector3 GetOutputPos() {
 		return new Vector3 (Output.transform.position.x, Output.transform.position.y-0.02f, Output.transform.position.z + 1);
-	}
-
-	public Color HexToColor(string hex) {
-		string rs = hex[0].ToString() + hex[1].ToString();
-		string gs = hex[2].ToString() + hex[3].ToString();
-		string bs = hex[4].ToString() + hex[5].ToString();
-		int r = System.Convert.ToInt32(rs,16);
-		int g = System.Convert.ToInt32(gs,16);
-		int b = System.Convert.ToInt32(bs,16);
-		return new Color(r/255.0f, g/255.0f, b/255.0f, 1.0f);
-	}
-	
-	public Color HexToColorWithAlpha(string hex,float alpha) {
-		string rs = hex[0].ToString() + hex[1].ToString();
-		string gs = hex[2].ToString() + hex[3].ToString();
-		string bs = hex[4].ToString() + hex[5].ToString();
-		int r = System.Convert.ToInt32(rs,16);
-		int g = System.Convert.ToInt32(gs,16);
-		int b = System.Convert.ToInt32(bs,16);
-		return new Color(r/255.0f, g/255.0f, b/255.0f, alpha);
 	}
 }
