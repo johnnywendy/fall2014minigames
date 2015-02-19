@@ -317,12 +317,8 @@ public class LogicGate : MonoBehaviour {
 		cables.Add(newCable);
 		newCable = null;
 	}
-
+	
 	public void UnplugFromGate(LogicGate gate) {
-		pluggedGates.RemoveAt(PrepUnplugFromGate(gate));
-	}
-
-	public int PrepUnplugFromGate(LogicGate gate) {
 		int index = pluggedGates.IndexOf(gate);
 		if (pluggedSides[index] == "right") {
 			pluggedGates[index].power2 = false;
@@ -334,6 +330,7 @@ public class LogicGate : MonoBehaviour {
 			pluggedGates[index].input1 = false;
 			pluggedGates[index].leftConnectedGate = null;
 		}
+		pluggedGates.RemoveAt(index);
 		pluggedSides.RemoveAt(index);
 		List<Cable> shouldRemove = new List<Cable>();
 		foreach (Cable cable in cables) {
@@ -348,7 +345,6 @@ public class LogicGate : MonoBehaviour {
 			cables.Remove(cable);
 			GameObject.Destroy(cable.gameObject);
 		}
-		return index;
 	}
 
 	public void powerReset(string side) {
@@ -369,11 +365,8 @@ public class LogicGate : MonoBehaviour {
 			leftConnectedPower.UnplugFromGate(this);
 		if (goalGate != null)
 			goalGate.resetConnection();
-		List<int> shouldRemoveGates = new List<int>();
 		foreach (LogicGate gate in pluggedGates)
-			shouldRemoveGates.Add(PrepUnplugFromGate(gate));
-		foreach (int index in shouldRemoveGates)
-			pluggedGates.RemoveAt(index);
+			UnplugFromGate(gate);
 		foreach (Cable acable in cables)
 			GameObject.Destroy(acable.gameObject);
 		cables = new List<Cable>();
