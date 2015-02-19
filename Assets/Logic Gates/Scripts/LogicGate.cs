@@ -48,6 +48,7 @@ public class LogicGate : MonoBehaviour {
 			else
 				Input2.SetActive(true);
 			transform.FindChild("Text").GetComponent<TextMesh>().text = labels[_logicMode];
+			myRenderer.sprite = Resources.Load<Sprite>(labels[_logicMode].ToLower()+"-gate");
 			SetColor(colors[_logicMode]);
 			updateOutput();
 		}
@@ -72,6 +73,10 @@ public class LogicGate : MonoBehaviour {
 		set {
 			_input1 = value;
 			updateOutput();
+			if (_input1)
+				SetColor(Input1,GameColors.on);
+			else
+				SetColor(Input1,GameColors.off);
 		}
 		get {
 			return _input1;
@@ -82,6 +87,10 @@ public class LogicGate : MonoBehaviour {
 		set {
 			_input2 = value;
 			updateOutput();
+			if (_input2)
+				SetColor(Input2,GameColors.on);
+			else
+				SetColor(Input2,GameColors.off);
 		}
 		get {
 			return _input2;
@@ -131,8 +140,8 @@ public class LogicGate : MonoBehaviour {
 		Reset = transform.FindChild("Reset").gameObject;
 		label = transform.FindChild ("Text").GetComponent<TextMesh> ();
 
-		SetColor(Input1,"1dc6e0");
-		SetColor(Input2,"5b1de0");
+		SetColor(Input1,GameColors.inactive);
+		SetColor(Input2,GameColors.inactive);
 
 		if (mode != -1)
 			logicMode = mode;
@@ -198,7 +207,7 @@ public class LogicGate : MonoBehaviour {
 	}
 
 	public void WasPickedUp() {
-		transform.localScale = new Vector3 (1.2f, 1.2f, 1f);
+		transform.localScale = new Vector3 (1f, 1f, 1f);
 		CablesShouldFollowTargets(true);
 		if (rightConnectedGate != null)
 			rightConnectedGate.CablesShouldFollowTargets(true);
@@ -211,7 +220,7 @@ public class LogicGate : MonoBehaviour {
 	}
 
 	public void WasPutDown() {
-		transform.localScale = new Vector3 (1, 1, 1f);
+		transform.localScale = new Vector3 (0.8f, 0.8f, 1f);
 		CablesShouldFollowTargets(false);
 		if (rightConnectedGate != null)
 			rightConnectedGate.CablesShouldFollowTargets(false);
@@ -239,15 +248,15 @@ public class LogicGate : MonoBehaviour {
 		if (power_output) {
 			if (output) {
 				Debug.Log(">> True!");
-				SetColor(Output,"1a991c");
+				SetColor(Output,GameColors.on);
 			} 
 			else {
 				Debug.Log(">> False.");
-				SetColor(Output,"f00c0c");
+				SetColor(Output,GameColors.off);
 			}
 		}
 		else {
-			SetColor(Output,"9d9d9d");
+			SetColor(Output,GameColors.inactive);
 		}
 		if (pluggedGates.Count > 0) {
 			for (int i = 0; i < pluggedGates.Count; i++) {
@@ -350,14 +359,17 @@ public class LogicGate : MonoBehaviour {
 	}
 
 	public void resetConnections() {
-		foreach (LogicGate gate in pluggedGates)
-			UnplugFromGate(gate);
 		if (rightConnectedPower != null)
 			rightConnectedPower.UnplugFromGate(this);
 		if (leftConnectedPower != null)
 			leftConnectedPower.UnplugFromGate(this);
 		if (goalGate != null)
 			goalGate.resetConnection();
+		foreach (LogicGate gate in pluggedGates)
+			UnplugFromGate(gate);
+		foreach (Cable acable in cables)
+			GameObject.Destroy(acable.gameObject);
+		cables = new List<Cable>();
 		power1 = false;
 		power2 = false;
 		input1 = false;

@@ -22,12 +22,12 @@ public class Cable : MonoBehaviour {
 				shouldReset = true;
 			}
 			if (power && value)
-				cable.material.color = Color.cyan;
+				cable.material.color = HexColor.HexToColor(GameColors.on2);
 			if (power && !value)
-				cable.material.color = Color.magenta;
+				cable.material.color = HexColor.HexToColor(GameColors.off2);
 			if (!power) {
 				shouldAnimate = false;
-				cable.SetColors(HexToColor("424242"),HexToColor("424242"));
+				cable.SetColors(HexColor.HexToColor(GameColors.inactive),HexColor.HexToColor(GameColors.inactive));
 			}
 		}
 		get {
@@ -137,9 +137,9 @@ public class Cable : MonoBehaviour {
 		cable.SetVertexCount(2);
 		cable.SetPosition (0, targetA.GetOutputPos());
 		cable.SetPosition (1, Input.mousePosition);
-		cable.SetColors(HexToColor("424242"),HexToColor("424242"));
+		cable.SetColors(HexColor.HexToColor("FFFFFF"),HexColor.HexToColor("FFFFFF"));
 		cable.SetWidth (0.04f, 0.04f);
-		cable.material.color = Color.cyan;
+		cable.material.color = HexColor.HexToColor(GameColors.on2);
 		shouldReset = true;
 		PowerA = targetA;
 		cableShouldFollowMouse = true;
@@ -153,9 +153,9 @@ public class Cable : MonoBehaviour {
 		cable.SetVertexCount(2);
 		cable.SetPosition (0, targetA.GetOutputPos());
 		cable.SetPosition (1, Input.mousePosition);
-		cable.SetColors(HexToColor("424242"),HexToColor("424242"));
+		cable.SetColors(HexColor.HexToColor("FFFFFF"),HexColor.HexToColor("FFFFFF"));
 		cable.SetWidth (0.04f, 0.04f);
-		cable.material.color = Color.cyan;
+		cable.material.color = HexColor.HexToColor(GameColors.on2);
 		GateA = targetA;
 		cableShouldFollowMouse = true;
 		cable.enabled = true;
@@ -207,25 +207,5 @@ public class Cable : MonoBehaviour {
 		cable.SetPosition (1, targetB.GetInputPos());
 		power = targetA.power_output;
 		signal = targetA.output;
-	}
-
-	public Color HexToColor(string hex) {
-		string rs = hex[0].ToString() + hex[1].ToString();
-		string gs = hex[2].ToString() + hex[3].ToString();
-		string bs = hex[4].ToString() + hex[5].ToString();
-		int r = System.Convert.ToInt32(rs,16);
-		int g = System.Convert.ToInt32(gs,16);
-		int b = System.Convert.ToInt32(bs,16);
-		return new Color(r/255.0f, g/255.0f, b/255.0f, 1.0f);
-	}
-	
-	public Color HexToColorWithAlpha(string hex,float alpha) {
-		string rs = hex[0].ToString() + hex[1].ToString();
-		string gs = hex[2].ToString() + hex[3].ToString();
-		string bs = hex[4].ToString() + hex[5].ToString();
-		int r = System.Convert.ToInt32(rs,16);
-		int g = System.Convert.ToInt32(gs,16);
-		int b = System.Convert.ToInt32(bs,16);
-		return new Color(r/255.0f, g/255.0f, b/255.0f, alpha);
 	}
 }

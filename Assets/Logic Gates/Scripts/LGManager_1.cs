@@ -139,8 +139,15 @@ public class LGManager_1 : MonoBehaviour {
 							PowerSource pow = plugObj.GetComponent<PowerSource>();
 
 							if (hit.collider.transform.gameObject.name == "Input1") {
-								socketObj.transform.parent.GetComponent<LogicGate>().HookUpPowerSource(pow,"left");
-								pow.PlugIntoGate(socketObj.transform.parent.GetComponent<LogicGate>(), "left");
+								if (socketObj.transform.parent.GetComponent<LogicGate>() != null) {
+									socketObj.transform.parent.GetComponent<LogicGate>().HookUpPowerSource(pow,"left");
+									pow.PlugIntoGate(socketObj.transform.parent.GetComponent<LogicGate>(), "left");
+								}
+								else {
+									plugObj.GetComponent<PowerSource>().DestroyNewCable();
+									isConnectingObj = false;
+									isHoldingPow = false;
+								}
 							}
 							if (hit.collider.transform.gameObject.name == "Input2") {
 								socketObj.transform.parent.GetComponent<LogicGate>().HookUpPowerSource(pow,"right");
@@ -276,6 +283,7 @@ public class LGManager_1 : MonoBehaviour {
 			}
 			GameObject.Destroy(pow.gameObject);
 		}
+		powerSources = new List<PowerSource>();
 	}
 	
 	public void SetupNewLevel(int level) {
@@ -292,35 +300,27 @@ public class LGManager_1 : MonoBehaviour {
 			truthTable = level3;
 			InvAmounts = inv3;
 		}
-
 		for (int i = 0; i < InvAmounts.Length; i++) {
 			buttons[i].SetActive(InvEnabled[i]);
 			buttons[i].transform.FindChild("Amount").GetComponent<Text>().text = InvAmounts[i].ToString();
 		}
-
 		int numberOfSources = truthTable[0].Count-1;
 		if (numberOfSources == 1) {
 			GameObject powerSource1 = (GameObject)Instantiate(Resources.Load("PowerSource", typeof(GameObject)),new Vector3(-4.8f,1.7f,-0.5f),Quaternion.identity);
-			powerSource1.transform.localEulerAngles = new Vector3(0,0,-90);
 			powerSources.Add(powerSource1.GetComponent<PowerSource>());
 		}
 		if (numberOfSources == 2) {
 			GameObject powerSource1 = (GameObject)Instantiate(Resources.Load("PowerSource", typeof(GameObject)),new Vector3(-4.8f,2.85f,-0.5f),Quaternion.identity);
-			powerSource1.transform.localEulerAngles = new Vector3(0,0,-90);
 			powerSources.Add(powerSource1.GetComponent<PowerSource>());
 			GameObject powerSource2 = (GameObject)Instantiate(Resources.Load("PowerSource", typeof(GameObject)),new Vector3(-4.8f,0.55f,-0.5f),Quaternion.identity);
-			powerSource2.transform.localEulerAngles = new Vector3(0,0,-90);
 			powerSources.Add(powerSource2.GetComponent<PowerSource>());
 		}
 		if (numberOfSources == 3) {
 			GameObject powerSource1 = (GameObject)Instantiate(Resources.Load("PowerSource", typeof(GameObject)),new Vector3(-4.8f,4f,-0.5f),Quaternion.identity);
-			powerSource1.transform.localEulerAngles = new Vector3(0,0,-90);
 			powerSources.Add(powerSource1.GetComponent<PowerSource>());
 			GameObject powerSource2 = (GameObject)Instantiate(Resources.Load("PowerSource", typeof(GameObject)),new Vector3(-4.8f,1.7f,-0.5f),Quaternion.identity);
-			powerSource2.transform.localEulerAngles = new Vector3(0,0,-90);
 			powerSources.Add(powerSource2.GetComponent<PowerSource>());
 			GameObject powerSource3 = (GameObject)Instantiate(Resources.Load("PowerSource", typeof(GameObject)),new Vector3(-4.8f,-0.6f,-0.5f),Quaternion.identity);
-			powerSource3.transform.localEulerAngles = new Vector3(0,0,-90);
 			powerSources.Add(powerSource3.GetComponent<PowerSource>());
 		}
 	}

@@ -4,11 +4,41 @@ using System.Collections;
 public class GoalGate : MonoBehaviour {
 
 	private GameObject Input1;
-	public bool input = false;
+	private Shader shaderGUItext;
+	private bool _input = false;
+	public bool input {
+		set {
+			_input = value;
+			if (plugged) {
+				if (_input) {
+					SetColor(gameObject,GameColors.on);
+					SetColor(Input1,GameColors.on2);
+				}
+				else {
+					SetColor(gameObject,GameColors.off);
+					SetColor(Input1,GameColors.off2);
+				}
+			}
+			else {
+				SetColor(gameObject,GameColors.inactive);
+				SetColor(Input1,GameColors.inactive2);
+			}
+		}
+		get {
+			return _input;
+		}
+	}
 	public bool plugged = false;
 
 	void Start() {
 		Input1 = transform.FindChild("Input1").gameObject;
+		shaderGUItext = Shader.Find("GUI/Text Shader");
+		input = false;
+	}
+
+	public void SetColor(GameObject obj, string hexCode) {
+		obj.GetComponent<SpriteRenderer>().material.shader = shaderGUItext;
+		obj.GetComponent<SpriteRenderer>().color = HexColor.HexToColor(hexCode);
 	}
 
 	public void resetConnection() {
