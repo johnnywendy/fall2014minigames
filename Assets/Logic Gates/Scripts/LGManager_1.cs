@@ -75,15 +75,6 @@ public class LGManager_1 : MonoBehaviour {
 		// On Left Click
 		if (Input.GetMouseButtonDown (0)) {
 			if (isHoldingObj || isEditing) {
-				if (isHoldingObj) {
-					isHoldingObj = false;
-					LogicGate gate = heldObj.GetComponent<LogicGate> ();
-					if (gate != null) {
-						gate.enabled = true;
-						gate.WasPutDown();
-						heldObj = null;
-					}
-				}
 				if (isEditing) {
 					RaycastHit hit = new RaycastHit();
 					Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -106,7 +97,7 @@ public class LGManager_1 : MonoBehaviour {
 			else {
 				RaycastHit hit = new RaycastHit();
 				Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
+				
 				if (Physics.Raycast(ray, out hit)) {
 					if (!isConnectingObj) {
 						if (hit.collider.transform.gameObject.name == "Output") {
@@ -128,7 +119,25 @@ public class LGManager_1 : MonoBehaviour {
 							HoldObject(hit.collider.transform.gameObject);
 						}
 					}
-					else if (isConnectingObj && (hit.collider.transform.gameObject.name == "Input1" || hit.collider.transform.gameObject.name == "Input2")) {
+				}
+			}
+		}
+		if (Input.GetMouseButtonUp (0)) {
+			if (isHoldingObj) {
+				isHoldingObj = false;
+				LogicGate gate = heldObj.GetComponent<LogicGate> ();
+				if (gate != null) {
+					gate.enabled = true;
+					gate.WasPutDown();
+					heldObj = null;
+				}
+			}
+			else {
+				RaycastHit hit = new RaycastHit();
+				Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+				
+				if (Physics.Raycast(ray, out hit)) {
+					if (isConnectingObj && (hit.collider.transform.gameObject.name == "Input1" || hit.collider.transform.gameObject.name == "Input2")) {
 						Debug.Log(plugObj.tag);
 						Debug.Log(plugObj.name);
 						if (plugObj.tag == "Power") {
@@ -137,7 +146,7 @@ public class LGManager_1 : MonoBehaviour {
 							isConnectingObj = false;
 							isHoldingPow = false;
 							PowerSource pow = plugObj.GetComponent<PowerSource>();
-
+							
 							if (hit.collider.transform.gameObject.name == "Input1") {
 								if (socketObj.transform.parent.GetComponent<LogicGate>() != null) {
 									socketObj.transform.parent.GetComponent<LogicGate>().HookUpPowerSource(pow,"left");
@@ -171,12 +180,14 @@ public class LGManager_1 : MonoBehaviour {
 					}
 				}
 				else if (isConnectingObj) {
-					if (isHoldingPow)
-						plugObj.GetComponent<PowerSource>().DestroyNewCable();
-					else
-						plugObj.GetComponent<LogicGate>().DestroyNewCable();
-					isConnectingObj = false;
-					isHoldingPow = false;
+					if (isHoldingObj) {
+						if (isHoldingPow)
+							plugObj.GetComponent<PowerSource>().DestroyNewCable();
+						else
+							plugObj.GetComponent<LogicGate>().DestroyNewCable();
+						isConnectingObj = false;
+						isHoldingPow = false;
+					}
 				}
 			}
 		}
