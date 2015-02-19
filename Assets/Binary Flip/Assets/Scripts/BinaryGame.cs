@@ -16,7 +16,7 @@ public class BinaryGame : MonoBehaviour
 		Text scoretxt;
 		Text timetxt;
 		float scorenum = 0;
-		float timenum = 20;
+		float timenum = 7;
 
 		int rowxpos = -145;
 		int rowypos = -300;
@@ -82,7 +82,7 @@ public class BinaryGame : MonoBehaviour
 						scoretxt.text = scorenum.ToString ("0000");
 						timetxt.text = timenum.ToString ("00");
 
-						for (int a =0; a<nextAvailableRowPos(); ++a) {
+						for (int a =0; a<blockrows.Length; ++a) {
 								if (blockrows [a].Rowtransform != null) {
 										Vector3 temp = new Vector3 (rowxpos, rowypos + a * 100, 0);
 										//blockrows [a].updatePos (temp);
