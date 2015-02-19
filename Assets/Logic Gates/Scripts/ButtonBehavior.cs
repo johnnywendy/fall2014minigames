@@ -11,7 +11,7 @@ public class ButtonBehavior : MonoBehaviour {
 	}
 
 	void OnMouseOver() {
-		transform.localScale = new Vector3(1.2f,1.2f,1f);
+		transform.localScale = new Vector3(1.4f,1.4f,1f);
 	}
 
 	void OnMouseExit() {
