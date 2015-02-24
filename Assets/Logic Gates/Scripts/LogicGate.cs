@@ -328,11 +328,13 @@ public class LogicGate : MonoBehaviour {
 			pluggedGates[index].power2 = false;
 			pluggedGates[index].input2 = false;
 			pluggedGates[index].rightConnectedGate = null;
+			pluggedGates[index].SetColor(pluggedGates[index].Input2,GameColors.inactive);
 		}
 		if (pluggedSides[index] == "left") {
 			pluggedGates[index].power1 = false;
 			pluggedGates[index].input1 = false;
 			pluggedGates[index].leftConnectedGate = null;
+			pluggedGates[index].SetColor(pluggedGates[index].Input1,GameColors.inactive);
 		}
 		pluggedSides.RemoveAt(index);
 		List<Cable> shouldRemove = new List<Cable>();
@@ -381,6 +383,8 @@ public class LogicGate : MonoBehaviour {
 		power2 = false;
 		input1 = false;
 		input2 = false;
+		SetColor(Input1,GameColors.inactive);
+		SetColor(Input2,GameColors.inactive);
 		for (int i = 0; i < pluggedGates.Count; i++) {
 			if (pluggedSides[i] == "left") {
 				pluggedGates[i].power1 = false;
@@ -405,13 +409,13 @@ public class LogicGate : MonoBehaviour {
 
 	public Vector3 GetInputPos(string side) {
 		if (side == "left")
-			return new Vector3 (Input1.transform.position.x, Input1.transform.position.y-0.02f, Input1.transform.position.z + 1);
+			return new Vector3 (Input1.transform.position.x+0.075f, Input1.transform.position.y-0.01f, Input1.transform.position.z + 10);
 		if (side == "right")
-			return new Vector3 (Input2.transform.position.x, Input2.transform.position.y-0.02f, Input2.transform.position.z + 1);
+			return new Vector3 (Input2.transform.position.x+0.075f, Input2.transform.position.y-0.01f, Input2.transform.position.z + 10);
 		return Vector3.zero;
 	}
 
 	public Vector3 GetOutputPos() {
-		return new Vector3 (Output.transform.position.x, Output.transform.position.y-0.02f, Output.transform.position.z + 1);
+		return new Vector3 (Output.transform.position.x+0.05f, Output.transform.position.y-0.02f, Output.transform.position.z + 10);
 	}
 }

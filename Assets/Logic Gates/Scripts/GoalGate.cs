@@ -47,7 +47,7 @@ public class GoalGate : MonoBehaviour {
 	}
 
 	public Vector3 GetInputPos() {
-		return new Vector3 (Input1.transform.position.x, Input1.transform.position.y-0.02f, Input1.transform.position.z+2);
+		return new Vector3 (Input1.transform.position.x-0.1f, Input1.transform.position.y-0.02f, Input1.transform.position.z+10);
 	}
 
 }

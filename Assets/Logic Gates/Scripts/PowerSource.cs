@@ -137,7 +137,7 @@ public class PowerSource : MonoBehaviour {
 	}
 
 	public Vector3 GetOutputPos() {
-		return new Vector3 (Output.transform.position.x, Output.transform.position.y-0.02f, Output.transform.position.z + 1);
+		return new Vector3 (Output.transform.position.x+0.1f, Output.transform.position.y-0.02f, Output.transform.position.z + 10);
 	}
 
 }

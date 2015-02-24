@@ -44,7 +44,7 @@ public class LGManager_1 : MonoBehaviour {
 
 		for (int i = 0; i < InvAmounts.Length; i++) {
 			buttons[i].SetActive(InvEnabled[i]);
-			buttons[i].transform.FindChild("Amount").GetComponent<Text>().text = InvAmounts[i].ToString();
+			buttons[i].transform.FindChild("Amount").GetComponent<TextMesh>().text = InvAmounts[i].ToString();
 		}
 
 		List<bool> row1 = new List<bool>() {false,true};
@@ -88,7 +88,7 @@ public class LGManager_1 : MonoBehaviour {
 							hit.collider.transform.parent.gameObject.GetComponent<LogicGate>().resetConnections();
 							int index = hit.collider.transform.parent.gameObject.GetComponent<LogicGate>().logicMode;
 							InvAmounts[index]++;
-							buttons[index].transform.FindChild("Amount").GetComponent<Text>().text = InvAmounts[index].ToString();
+							buttons[index].transform.FindChild("Amount").GetComponent<TextMesh>().text = InvAmounts[index].ToString();
 							Destroy(hit.collider.transform.parent.gameObject);
 						}
 					}
@@ -180,14 +180,12 @@ public class LGManager_1 : MonoBehaviour {
 					}
 				}
 				else if (isConnectingObj) {
-					if (isHoldingObj) {
-						if (isHoldingPow)
-							plugObj.GetComponent<PowerSource>().DestroyNewCable();
-						else
-							plugObj.GetComponent<LogicGate>().DestroyNewCable();
-						isConnectingObj = false;
-						isHoldingPow = false;
-					}
+					if (isHoldingPow)
+						plugObj.GetComponent<PowerSource>().DestroyNewCable();
+					else
+						plugObj.GetComponent<LogicGate>().DestroyNewCable();
+					isConnectingObj = false;
+					isHoldingPow = false;
 				}
 			}
 		}
@@ -227,48 +225,49 @@ public class LGManager_1 : MonoBehaviour {
 		}
 	}
 
-	public void ButtonClicked(GameObject clickedObj) {
+	public void ButtonClicked(string newObject) {
 		isEditing = false;
 		foreach (GameObject obj in GameObject.FindGameObjectsWithTag("Gate")) {
 			obj.GetComponent<LogicGate>().SetEditMode(isEditing);
 		}
+		Debug.Log("sdfasdf");
 		if (CanHoldObj()) {
 			bool shouldDelete = false;
 			GameObject newGate = (GameObject)Instantiate(Resources.Load("LogicGate", typeof(GameObject)),Camera.main.ScreenToWorldPoint(Input.mousePosition),Quaternion.identity);
-			if (clickedObj.name == "AndButton" && InvAmounts[0] > 0) {
+			if (newObject == "AndButton" && InvAmounts[0] > 0) {
 				InvAmounts[0] -= 1;
 				newGate.GetComponent<LogicGate>().mode = 0;
-				buttons[0].transform.FindChild("Amount").GetComponent<Text>().text = InvAmounts[0].ToString();
+				buttons[0].transform.FindChild("Amount").GetComponent<TextMesh>().text = InvAmounts[0].ToString();
 			}
-			else if (clickedObj.name == "OrButton" && InvAmounts[1] > 0) {
+			else if (newObject == "OrButton" && InvAmounts[1] > 0) {
 				InvAmounts[1] -= 1;
 				newGate.GetComponent<LogicGate>().mode = 1;
-				buttons[1].transform.FindChild("Amount").GetComponent<Text>().text = InvAmounts[1].ToString();
+				buttons[1].transform.FindChild("Amount").GetComponent<TextMesh>().text = InvAmounts[1].ToString();
 			}
-			else if (clickedObj.name == "NotButton" && InvAmounts[2] > 0) {
+			else if (newObject == "NotButton" && InvAmounts[2] > 0) {
 				InvAmounts[2] -= 1;
 				newGate.GetComponent<LogicGate>().mode = 2;
-				buttons[2].transform.FindChild("Amount").GetComponent<Text>().text = InvAmounts[2].ToString();
+				buttons[2].transform.FindChild("Amount").GetComponent<TextMesh>().text = InvAmounts[2].ToString();
 			}
-			else if (clickedObj.name == "NandButton" && InvAmounts[3] > 0) {
+			else if (newObject == "NandButton" && InvAmounts[3] > 0) {
 				InvAmounts[3] -= 1;
 				newGate.GetComponent<LogicGate>().mode = 3;
-				buttons[3].transform.FindChild("Amount").GetComponent<Text>().text = InvAmounts[3].ToString();
+				buttons[3].transform.FindChild("Amount").GetComponent<TextMesh>().text = InvAmounts[3].ToString();
 			}
-			else if (clickedObj.name == "NorButton" && InvAmounts[4] > 0) {
+			else if (newObject == "NorButton" && InvAmounts[4] > 0) {
 				InvAmounts[4] -= 1;
 				newGate.GetComponent<LogicGate>().mode = 4;
-				buttons[4].transform.FindChild("Amount").GetComponent<Text>().text = InvAmounts[4].ToString();
+				buttons[4].transform.FindChild("Amount").GetComponent<TextMesh>().text = InvAmounts[4].ToString();
 			}
-			else if (clickedObj.name == "XorButton" && InvAmounts[5] > 0) {
+			else if (newObject == "XorButton" && InvAmounts[5] > 0) {
 				InvAmounts[5] -= 1;
 				newGate.GetComponent<LogicGate>().mode = 5;
-				buttons[5].transform.FindChild("Amount").GetComponent<Text>().text = InvAmounts[5].ToString();
+				buttons[5].transform.FindChild("Amount").GetComponent<TextMesh>().text = InvAmounts[5].ToString();
 			}
-			else if (clickedObj.name == "XnorButton" && InvAmounts[6] > 0) {
+			else if (newObject == "XnorButton" && InvAmounts[6] > 0) {
 				InvAmounts[6] -= 1;
 				newGate.GetComponent<LogicGate>().mode = 6;
-				buttons[6].transform.FindChild("Amount").GetComponent<Text>().text = InvAmounts[6].ToString();
+				buttons[6].transform.FindChild("Amount").GetComponent<TextMesh>().text = InvAmounts[6].ToString();
 			}
 			else {
 				Destroy(newGate);
@@ -285,7 +284,7 @@ public class LGManager_1 : MonoBehaviour {
 			lGate.resetConnections();
 			int index = lGate.logicMode;
 			InvAmounts[index]++;
-			buttons[index].transform.FindChild("Amount").GetComponent<Text>().text = InvAmounts[index].ToString();
+			buttons[index].transform.FindChild("Amount").GetComponent<TextMesh>().text = InvAmounts[index].ToString();
 			Destroy(gate);
 		}
 		foreach (PowerSource pow in powerSources) {
@@ -313,7 +312,7 @@ public class LGManager_1 : MonoBehaviour {
 		}
 		for (int i = 0; i < InvAmounts.Length; i++) {
 			buttons[i].SetActive(InvEnabled[i]);
-			buttons[i].transform.FindChild("Amount").GetComponent<Text>().text = InvAmounts[i].ToString();
+			buttons[i].transform.FindChild("Amount").GetComponent<TextMesh>().text = InvAmounts[i].ToString();
 		}
 		int numberOfSources = truthTable[0].Count-1;
 		if (numberOfSources == 1) {
@@ -451,7 +450,7 @@ public class LGManager_1 : MonoBehaviour {
 			level++;
 			if (level == 3) {
 				alertBox.rightButtonText = "MENU";
-				alertBox.SetRightAction("loadscene","MainMenu");
+				alertBox.SetRightAction("loadscene","Main");
 			}
 			else {
 				alertBox.rightButtonText = "NEXT";

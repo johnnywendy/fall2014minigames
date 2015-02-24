@@ -51,9 +51,15 @@ public class Cable : MonoBehaviour {
 	private bool cableShouldFollowMouse = false;
 	public bool cableShouldFollowTargets = false;
 
-	// Use this for initialization
-	void Start () {
-
+	private LineRenderer myRenderer;
+	private Shader shaderGUItext;
+	private Shader shaderSpritesDefault;
+	
+	void Awake() {
+		myRenderer = gameObject.GetComponent<LineRenderer>();
+		shaderGUItext = Shader.Find("GUI/Text Shader");
+		shaderSpritesDefault = Shader.Find("Sprites/Default");
+		myRenderer.material.shader = shaderGUItext;
 	}
 
 	// Update is called once per frame
