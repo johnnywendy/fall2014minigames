@@ -10,7 +10,7 @@ public class LogicGate : MonoBehaviour {
 	public bool disableOnStart = false;
 
 	private string[] labels = new string[] {"AND","OR","NOT","NAND","NOR","XOR","XNOR"};
-	private string[] colors = new string[] {"2C3E50","80DB96","FC4349","6DBCDB","FFBB74","9D93FC","D7DADB"};
+	private string[] colors = new string[] {"36b1bf","ffcc00","f2385a","55eecc","825dc2","f5a503","4cd963"};
 	private TextMesh label;
 	private List<LogicGate> pluggedGates = new List<LogicGate>();
 	private List<string> pluggedSides = new List<string>();
