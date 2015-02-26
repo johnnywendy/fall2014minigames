@@ -63,6 +63,7 @@ public class LGManager_1 : MonoBehaviour {
 		row4 = new List<bool>() {false,true,false};
 		level3 = new List<List<bool>>() {row1,row2,row3,row4};
 
+		level = GameData.GetCurrentLevel();
 		SetupNewLevel(level);
 	}
 

@@ -47,8 +47,10 @@ public class CircleButton : MonoBehaviour {
 	}
 
 	void OnMouseUp() {
-		if (levelState != states.incomplete)
+		if (levelState != states.incomplete) {
+			GameData.SetCurrentLevel(int.Parse(transform.GetComponentInChildren<TextMesh>().text));
 			Application.LoadLevel(GameData.GetCurrentGame()+1);
+		}
 	}
 
 	public void SetLevel(int number, int maxNumber, string scene) {
