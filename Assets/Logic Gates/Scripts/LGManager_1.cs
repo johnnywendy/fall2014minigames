@@ -34,7 +34,7 @@ public class LGManager_1 : MonoBehaviour {
 	int[] inv2 = new int[] {0,0,2,2,0,0,0};
 	string message2 = "Congratulations, you just created an AND gate.";
 	List<List<bool>> level3;
-	int[] inv3 = new int[] {2,0,2,2,0,0,0};
+	int[] inv3 = new int[] {2,0,2,3,0,0,0};
 	string message3 = "Congratulations, you just created an OR gate.";
 
 	// Use this for initialization
