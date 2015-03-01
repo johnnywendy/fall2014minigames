@@ -1,15 +1,16 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
+using System.Collections.Generic;
 
 public class BinaryGame : MonoBehaviour
 {
 	public bool hard = false;
 	public bool medium = false;
-	BinaryBlockRow[] blockrows = new BinaryBlockRow[6];
-	int nextRowPos = 5;
+	//BinaryBlockRow[] blockrows = new BinaryBlockRow[6];
+	System.Collections.Generic.List<BinaryBlockRow> blockrows = new List<BinaryBlockRow> ();
 
 	bool init = false;
+	bool nextRowFlag = true;
 	private bool gameoverbool = false;
 	public GameObject score;
 	public GameObject time;
@@ -18,20 +19,15 @@ public class BinaryGame : MonoBehaviour
 	float scorenum = 0;
 	float timeTillNextRow = 20;
 	float totalTimePassed = 0;
-
+	int lastnumofRows = 6;
 	int rowxpos = -145;
 	int rowypos = -300;
-		
+	BinaryBlockRow temp;
 	void Start ()
 	{
-		BinaryBlockRow temp;
 		for (int a =0; a<6; ++a) {
 			temp = gameObject.AddComponent<BinaryBlockRow> ();
-			if (a != 5) {			
-				blockrows.SetValue (temp, a);
-			} else {
-				blockrows.SetValue (temp, a);
-			}
+			blockrows.Add (temp);
 		}
 
 		scoretxt = score.GetComponent<Text> ();
@@ -40,18 +36,20 @@ public class BinaryGame : MonoBehaviour
 	}
 	void FixedUpdate ()
 	{
-				
 	}
 
 	// Update is called once per frame
 	void Update ()
 	{
+
 		if (!gameoverbool) {
 			incrementTime ();
-			if (timeTillNextRow <= 0) {
-
+			if (timeTillNextRow <= 0 && nextRowFlag) {
+				nextRowFlag = false;
 				addNextRow ();
 			
+			} else {
+				nextRowFlag = true;
 			}
 
 			if (!init) {
@@ -59,16 +57,16 @@ public class BinaryGame : MonoBehaviour
 			}
 
 			if (timeTillNextRow <= 4) {
-				Debug.Log (nextRowPos);
-				blockrows [nextRowPos].opacity (timeTillNextRow);
+				blockrows [blockrows.Count - 1].opacity (timeTillNextRow);
 			} else {
-				Debug.Log (nextRowPos);
-				Debug.Log (blockrows [nextRowPos]);
-				blockrows [nextRowPos].opacity (5);
+				blockrows [blockrows.Count - 1].opacity (5);
 			}
 
 			updateNumbers ();
 			animateRows ();	
+			if (lastnumofRows != blockrows.Count) {
+				lastnumofRows = blockrows.Count;
+			}
 			checkForSolvedRows ();
 						
 		} else {
@@ -77,7 +75,7 @@ public class BinaryGame : MonoBehaviour
 	}
 	private void checkForSolvedRows ()
 	{
-		for (int a =0; a<blockrows.Length; ++a) {
+		for (int a =0; a<blockrows.Count; ++a) {
 			//Debug.Log (a.ToString () + " val: " + blockrows [a].CurrentVal.ToString ());
 			if (blockrows [a] != null) {
 				if (blockrows [a].CurrentVal == blockrows [a].Goalnum) {
@@ -89,8 +87,7 @@ public class BinaryGame : MonoBehaviour
 
 	private void animateRows ()
 	{
-		int l = nextAvailableRowPos ();
-		for (int a = 0; a < l; ++a) {
+		for (int a = 0; a < blockrows.Count; ++a) {
 			if (blockrows [a].Rowtransform != null) {
 				Vector3 temp = new Vector3 (rowxpos, rowypos + a * 100, 0);
 				blockrows [a].Rowtransform.localPosition = Vector3.Lerp (blockrows [a].Rowtransform.localPosition, temp, Time.deltaTime);
@@ -107,14 +104,6 @@ public class BinaryGame : MonoBehaviour
 		timetxt.text = timeTillNextRow.ToString ("00");
 	}
 
-	private int nextAvailableRowPos ()
-	{
-		for (int a =0; a<blockrows.Length; ++a) {
-			if (blockrows [a] == null)
-				return a;
-		}
-		return -1;
-	}
 	private void incrementTime ()
 	{
 		timeTillNextRow -= Time.deltaTime;
@@ -122,21 +111,19 @@ public class BinaryGame : MonoBehaviour
 	}
 	private void addNextRow ()
 	{
-		if (nextAvailableRowPos () == -1) {
+		if (blockrows.Count >= 6) {
 			gameOver ();
 		} else {
 			timeTillNextRow = 20;
-			BinaryBlockRow tempbbr;
-			tempbbr = gameObject.AddComponent<BinaryBlockRow> ();
-			nextRowPos = nextAvailableRowPos ();				
-			blockrows.SetValue (tempbbr, nextRowPos);
-			initializeRowPlacement ();
+			temp = gameObject.AddComponent<BinaryBlockRow> ();
+			temp.opacity (5);
+			blockrows.Add (temp);
 		}
 	}
 	private void initializeRowPlacement ()
 	{
 		init = true;
-		for (int a =0; a< blockrows.Length; ++a) {
+		for (int a =0; a< blockrows.Count; ++a) {
 			Vector3 tempv = new Vector3 (rowxpos, rowypos + a * 100, 0);
 			if (blockrows [a] != null) {
 				blockrows [a].updatePos (tempv);
@@ -148,14 +135,13 @@ public class BinaryGame : MonoBehaviour
 
 	private void rowSolved (int a)
 	{
-		float time = 1f;
+		float time = .1f;
+
 		if (blockrows [a] != null)
 			blockrows [a].rowSolved (time);
-		blockrows [a] = null;
-		Invoke ("shiftRows", time);
 		scorenum += (100 - totalTimePassed);
-
-
+		blockrows.RemoveAt (a);
+	
 	}
 
 	private void gameOver ()
@@ -171,25 +157,5 @@ public class BinaryGame : MonoBehaviour
 		alertBox.SetLeftAction ("loadscene", "MainMenu");
 		alertBox.SetRightAction ("loadscene", "binarylevel");
 	}
-
-	private void shiftRows ()
-	{
-		nextRowPos--;
-		bool flag = true;
-		int num = 0;
-		for (int a =0; a<blockrows.Length && flag; ++a) {
-			if (blockrows [a] == null) {
-				flag = false;
-				num = a;
-			}
-		}
-
-		for (int i =num; i<blockrows.Length-1; ++i) {
-			blockrows [i] = blockrows [i + 1];
-		}
-		blockrows [blockrows.Length - 1] = null;
-
-	}
-
-		
+			
 }
