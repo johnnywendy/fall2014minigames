@@ -29,6 +29,7 @@ public class GoalGate : MonoBehaviour {
 		}
 	}
 	public bool plugged = false;
+	public bool powered = false;
 
 	void Start() {
 		Input1 = transform.FindChild("Input1").gameObject;

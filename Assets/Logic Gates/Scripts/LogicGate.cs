@@ -65,7 +65,6 @@ public class LogicGate : MonoBehaviour {
 			else
 				return false;
 			return false;
-			return true;
 		}
 	}
 	
@@ -307,6 +306,7 @@ public class LogicGate : MonoBehaviour {
 		goalGate = goal;
 		goalGate.plugged = true;
 		goalGate.input = output;
+		goalGate.powered = power_output;
 		newCable.Connect(this,goal);
 		newCable.shouldAnimate = true;
 		cables.Add(newCable);
@@ -364,8 +364,10 @@ public class LogicGate : MonoBehaviour {
 			rightConnectedPower.UnplugFromGate(this);
 		if (leftConnectedPower != null)
 			leftConnectedPower.UnplugFromGate(this);
-		if (goalGate != null)
+		if (goalGate != null) {
+			goalGate.powered = false;
 			goalGate.resetConnection();
+		}
 		List<int> shouldRemoveGates = new List<int>();
 		foreach (LogicGate gate in pluggedGates)
 			shouldRemoveGates.Add(PrepUnplugFromGate(gate));

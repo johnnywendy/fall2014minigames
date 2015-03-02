@@ -47,31 +47,43 @@ public class TruthTable : MonoBehaviour {
 				Res[i].SetActive(true);
 			}
 		}
+		for (int i = 0; i < goalTable.Count; i++ ) {
+			for (int j = 0; j < goalTable[0].Count; j++) {
+				switch(j) {
+				case 0:
+					HexColor.SetColor(As[i],(goalTable[i][j] ? GameColors.on : GameColors.off));
+					break;
+				case 1:
+					if (goalTable[0].Count == 2)
+						HexColor.SetColor(Outs[i],(goalTable[i][j] ? GameColors.on : GameColors.off));
+					else
+						HexColor.SetColor(Bs[i],(goalTable[i][j] ? GameColors.on : GameColors.off));
+					break;
+				case 2:
+					HexColor.SetColor(Outs[i],(goalTable[i][j] ? GameColors.on : GameColors.off));
+					break;
+				default:
+					break;
+				}
+			}
+		}
 		UpdateTable(newTable);
 	}
 
 	public void UpdateTable(List<List<bool>> table) {
 		for (int i = 0; i < table.Count; i++ ) {
-			for (int j = 0; j < table[0].Count; j++) {
-				switch(j) {
-					case 0:
-						HexColor.SetColor(As[i],(table[i][j] ? GameColors.on : GameColors.off));
-						break;
-					case 1:
-						if (table[0].Count == 2)
-							HexColor.SetColor(Outs[i],(table[i][j] ? GameColors.on : GameColors.off));
-						else
-							HexColor.SetColor(Bs[i],(table[i][j] ? GameColors.on : GameColors.off));
-						break;
-					case 2:
-						HexColor.SetColor(Outs[i],(table[i][j] ? GameColors.on : GameColors.off));
-						break;
-					default:
-						break;
-				}
+			bool equals = (table[i].TrueForAll(goalTable[i].Contains) && goalTable[i].TrueForAll(table[i].Contains));
+			GoalGate ggate = GameObject.Find("GoalBlock").GetComponent<GoalGate>();
+			if (equals && ggate.plugged && ggate.powered) {
+				Res[i].GetComponent<CheckOrX>().val = true;
+				HexColor.SetColor(Res[i],GameColors.on2);
+				Debug.Log("OH MY GOD ITS FUCKING TRUE");
 			}
-			//Res[i].GetComponent<CheckOrX>().val = (table[i] == goalTable[i]);
-			//HexColor.SetColor(Res[i],((table[i] == goalTable[i]) ? GameColors.on2 : GameColors.off2));
+			else {
+				Res[i].GetComponent<CheckOrX>().val = false;
+				HexColor.SetColor(Res[i],GameColors.off2);
+				Debug.Log("OH MY GOD ITS FUCKING FALSE");
+			}
 		}
 	}
 

@@ -19,7 +19,7 @@ public class CheckOrX : MonoBehaviour {
 		}
 	}
 
-	void Start() {
+	void Awake() {
 		sRenderer = gameObject.GetComponent<SpriteRenderer>();
 	}
 

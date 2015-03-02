@@ -189,6 +189,7 @@ public class LGManager_1 : MonoBehaviour {
 					isHoldingPow = false;
 				}
 			}
+			GameObject.Find ("TruthTable").GetComponent<TruthTable>().UpdateTable(GetCurrentTable());
 		}
 		// On Right Click
 		if (Input.GetMouseButtonDown (1)) {
@@ -339,7 +340,9 @@ public class LGManager_1 : MonoBehaviour {
 
 	public List<List<bool>> GetCurrentTable() {
 		List<List<bool>> currentTable = new List<List<bool>>();
+		List<bool> originalOutputs = new List<bool>();
 		foreach (PowerSource input in powerSources) {
+			originalOutputs.Add(input.output);
 			input.SetOutput(false);
 		}
 		if (powerSources.Count == 1) {
@@ -375,6 +378,8 @@ public class LGManager_1 : MonoBehaviour {
 			powerSources[2].FlipOutput();
 			currentTable.Add(GetRow());
 		}
+		for (int i = 0; i < powerSources.Count; i++)
+			powerSources[i].SetOutput(originalOutputs[i]);
 		return currentTable;
 	}
 
