@@ -74,9 +74,9 @@ public class LogicGate : MonoBehaviour {
 			_input1 = value;
 			updateOutput();
 			if (_input1)
-				SetColor(Input1,GameColors.on);
+				HexColor.SetColor(Input1,GameColors.on);
 			else
-				SetColor(Input1,GameColors.off);
+				HexColor.SetColor(Input1,GameColors.off);
 		}
 		get {
 			return _input1;
@@ -88,9 +88,9 @@ public class LogicGate : MonoBehaviour {
 			_input2 = value;
 			updateOutput();
 			if (_input2)
-				SetColor(Input2,GameColors.on);
+				HexColor.SetColor(Input2,GameColors.on);
 			else
-				SetColor(Input2,GameColors.off);
+				HexColor.SetColor(Input2,GameColors.off);
 		}
 		get {
 			return _input2;
@@ -140,8 +140,8 @@ public class LogicGate : MonoBehaviour {
 		Reset = transform.FindChild("Reset").gameObject;
 		label = transform.FindChild ("Text").GetComponent<TextMesh> ();
 
-		SetColor(Input1,GameColors.inactive);
-		SetColor(Input2,GameColors.inactive);
+		HexColor.SetColor(Input1,GameColors.inactive);
+		HexColor.SetColor(Input2,GameColors.inactive);
 
 		if (mode != -1)
 			logicMode = mode;
@@ -180,11 +180,6 @@ public class LogicGate : MonoBehaviour {
 		hexColor = hexCode;
 		myRenderer.material.shader = shaderGUItext;
 		myRenderer.color = HexColor.HexToColor(hexCode);
-	}
-
-	public void SetColor(GameObject obj, string hexCode) {
-		obj.GetComponent<SpriteRenderer>().material.shader = shaderGUItext;
-		obj.GetComponent<SpriteRenderer>().color = HexColor.HexToColor(hexCode);
 	}
 
 	public void SetEditMode(bool val) {
@@ -248,15 +243,15 @@ public class LogicGate : MonoBehaviour {
 		if (power_output) {
 			if (output) {
 				Debug.Log(">> True!");
-				SetColor(Output,GameColors.on);
+				HexColor.SetColor(Output,GameColors.on);
 			} 
 			else {
 				Debug.Log(">> False.");
-				SetColor(Output,GameColors.off);
+				HexColor.SetColor(Output,GameColors.off);
 			}
 		}
 		else {
-			SetColor(Output,GameColors.inactive);
+			HexColor.SetColor(Output,GameColors.inactive);
 		}
 		if (pluggedGates.Count > 0) {
 			for (int i = 0; i < pluggedGates.Count; i++) {
@@ -328,13 +323,13 @@ public class LogicGate : MonoBehaviour {
 			pluggedGates[index].power2 = false;
 			pluggedGates[index].input2 = false;
 			pluggedGates[index].rightConnectedGate = null;
-			pluggedGates[index].SetColor(pluggedGates[index].Input2,GameColors.inactive);
+			HexColor.SetColor(pluggedGates[index].Input2,GameColors.inactive);
 		}
 		if (pluggedSides[index] == "left") {
 			pluggedGates[index].power1 = false;
 			pluggedGates[index].input1 = false;
 			pluggedGates[index].leftConnectedGate = null;
-			pluggedGates[index].SetColor(pluggedGates[index].Input1,GameColors.inactive);
+			HexColor.SetColor(pluggedGates[index].Input1,GameColors.inactive);
 		}
 		pluggedSides.RemoveAt(index);
 		List<Cable> shouldRemove = new List<Cable>();
@@ -383,8 +378,8 @@ public class LogicGate : MonoBehaviour {
 		power2 = false;
 		input1 = false;
 		input2 = false;
-		SetColor(Input1,GameColors.inactive);
-		SetColor(Input2,GameColors.inactive);
+		HexColor.SetColor(Input1,GameColors.inactive);
+		HexColor.SetColor(Input2,GameColors.inactive);
 		for (int i = 0; i < pluggedGates.Count; i++) {
 			if (pluggedSides[i] == "left") {
 				pluggedGates[i].power1 = false;

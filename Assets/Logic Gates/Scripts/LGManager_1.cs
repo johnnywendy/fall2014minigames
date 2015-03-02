@@ -334,9 +334,10 @@ public class LGManager_1 : MonoBehaviour {
 			GameObject powerSource3 = (GameObject)Instantiate(Resources.Load("PowerSource", typeof(GameObject)),new Vector3(-4.8f,-0.6f,-0.5f),Quaternion.identity);
 			powerSources.Add(powerSource3.GetComponent<PowerSource>());
 		}
+		GameObject.Find ("TruthTable").GetComponent<TruthTable>().SetTable(truthTable);
 	}
 
-	public void CheckAnswer() {
+	public List<List<bool>> GetCurrentTable() {
 		List<List<bool>> currentTable = new List<List<bool>>();
 		foreach (PowerSource input in powerSources) {
 			input.SetOutput(false);
@@ -374,7 +375,11 @@ public class LGManager_1 : MonoBehaviour {
 			powerSources[2].FlipOutput();
 			currentTable.Add(GetRow());
 		}
-		CheckCompletion(currentTable);
+		return currentTable;
+	}
+
+	public void CheckAnswer() {
+		CheckCompletion(GetCurrentTable());
 	}
 
 	List<bool> GetRow() {
@@ -385,7 +390,11 @@ public class LGManager_1 : MonoBehaviour {
 		return currentScenario;
 	}
 
-	public void CheckScenario() {
+	public void UpdateTruthTable() {
+		GameObject.Find ("TruthTable").GetComponent<TruthTable>().UpdateTable(GetCurrentTable());
+	}
+
+	/*public void CheckScenario() {
 		List<bool> currentScenario = new List<bool>();
 		foreach (PowerSource input in powerSources)
 			currentScenario.Add (input.output);
@@ -426,7 +435,7 @@ public class LGManager_1 : MonoBehaviour {
 			Debug.Log("CORRECT");
 		else
 			Debug.Log("INCORRECT");
-	}
+	}*/
 
 	void CheckCompletion(List<List<bool>> currentAnswer) {
 		bool correct = true;
