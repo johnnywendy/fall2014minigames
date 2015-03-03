@@ -27,7 +27,7 @@ public class Cable : MonoBehaviour {
 				cable.material.color = HexColor.HexToColor(GameColors.off2);
 			if (!power) {
 				shouldAnimate = false;
-				cable.SetColors(HexColor.HexToColor(GameColors.inactive),HexColor.HexToColor(GameColors.inactive));
+				cable.material.color = HexColor.HexToColor(GameColors.inactive2);
 			}
 		}
 		get {

@@ -23,6 +23,7 @@ public class TruthTable : MonoBehaviour {
 	}
 
 	public void SetTable(List<List<bool>> newTable) {
+		Debug.Log("yup");
 		goalTable = newTable;
 		if (goalTable[0].Count == 2) {
 			for (int i = 2; i < 4; i++) {
