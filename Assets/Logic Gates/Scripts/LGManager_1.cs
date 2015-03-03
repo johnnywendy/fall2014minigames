@@ -82,7 +82,6 @@ public class LGManager_1 : MonoBehaviour {
 					
 					if (Physics.Raycast(ray, out hit)) {
 						if (hit.collider.transform.gameObject.name == "Reset") {
-							Debug.Log("hit");
 							hit.collider.transform.parent.gameObject.GetComponent<LogicGate>().resetConnections();
 						}
 						if (hit.collider.transform.gameObject.name == "Destroy") {
@@ -102,7 +101,6 @@ public class LGManager_1 : MonoBehaviour {
 				if (Physics.Raycast(ray, out hit)) {
 					if (!isConnectingObj) {
 						if (hit.collider.transform.gameObject.name == "Output") {
-							Debug.Log("> Output selected");
 							plugObj = hit.collider.transform.parent.gameObject;
 							if (hit.collider.tag == "IO") {
 								plugObj.GetComponent<LogicGate>().NeedNewCable();
@@ -139,10 +137,7 @@ public class LGManager_1 : MonoBehaviour {
 				
 				if (Physics.Raycast(ray, out hit)) {
 					if (isConnectingObj && (hit.collider.transform.gameObject.name == "Input1" || hit.collider.transform.gameObject.name == "Input2")) {
-						Debug.Log(plugObj.tag);
-						Debug.Log(plugObj.name);
 						if (plugObj.tag == "Power") {
-							Debug.Log("> Input selected");
 							socketObj = hit.collider.transform.gameObject;
 							isConnectingObj = false;
 							isHoldingPow = false;
@@ -165,7 +160,6 @@ public class LGManager_1 : MonoBehaviour {
 							}
 						}
 						else if (plugObj.tag == "Gate" && hit.collider.tag != "Goal") {
-							Debug.Log("> Input selected");
 							socketObj = hit.collider.transform.gameObject;
 							isConnectingObj = false;
 							if (hit.collider.transform.gameObject.name == "Input1")
@@ -232,7 +226,6 @@ public class LGManager_1 : MonoBehaviour {
 		foreach (GameObject obj in GameObject.FindGameObjectsWithTag("Gate")) {
 			obj.GetComponent<LogicGate>().SetEditMode(isEditing);
 		}
-		Debug.Log("sdfasdf");
 		if (CanHoldObj()) {
 			bool shouldDelete = false;
 			GameObject newGate = (GameObject)Instantiate(Resources.Load("LogicGate", typeof(GameObject)),Camera.main.ScreenToWorldPoint(Input.mousePosition),Quaternion.identity);

@@ -241,11 +241,9 @@ public class LogicGate : MonoBehaviour {
 		}
 		if (power_output) {
 			if (output) {
-				Debug.Log(">> True!");
 				HexColor.SetColor(Output,GameColors.on);
 			} 
 			else {
-				Debug.Log(">> False.");
 				HexColor.SetColor(Output,GameColors.off);
 			}
 		}
@@ -265,6 +263,7 @@ public class LogicGate : MonoBehaviour {
 			}
 		}
 		if (goalGate != null) {
+			goalGate.powered = power_output;
 			goalGate.input = output;
 		}
 	}

@@ -98,7 +98,7 @@ public class PowerSource : MonoBehaviour {
 	
 	public void UnplugFromGate(LogicGate gate) {
 		int index = pluggedGates.IndexOf(gate);
-		if (index > 0) {
+		if (index > -1) {
 			pluggedGates.RemoveAt(index);
 			pluggedSides.RemoveAt(index);
 		}

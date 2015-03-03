@@ -72,7 +72,7 @@ public class AlertBox : MonoBehaviour {
 		Vector3 pos = transform.localPosition;
 		Vector3 scale = transform.localScale;
 		Quaternion rotation = transform.localRotation;
-		transform.parent = GameObject.Find ("Canvas").transform;
+		transform.SetParent(GameObject.Find ("Canvas").transform);
 		transform.position = Camera.main.ScreenToWorldPoint( new Vector3(Screen.width/2, Screen.height/2, 0f));
 		transform.position = new Vector3(transform.position.x,transform.position.y,Camera.main.transform.localPosition.z+1f);
 		transform.localScale = scale;

@@ -36,7 +36,9 @@ public static class HexColor {
 	}
 
 	public static void SetColor(GameObject obj, string hexCode) {
-		obj.GetComponent<SpriteRenderer>().material.shader = shaderGUItext;
-		obj.GetComponent<SpriteRenderer>().color = HexColor.HexToColor(hexCode);
+		if (obj != null) {
+			obj.GetComponent<SpriteRenderer>().material.shader = shaderGUItext;
+			obj.GetComponent<SpriteRenderer>().color = HexColor.HexToColor(hexCode);
+		}
 	}
 }

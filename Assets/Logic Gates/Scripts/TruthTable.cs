@@ -71,18 +71,20 @@ public class TruthTable : MonoBehaviour {
 	}
 
 	public void UpdateTable(List<List<bool>> table) {
-		for (int i = 0; i < table.Count; i++ ) {
-			bool equals = (table[i].TrueForAll(goalTable[i].Contains) && goalTable[i].TrueForAll(table[i].Contains));
-			GoalGate ggate = GameObject.Find("GoalBlock").GetComponent<GoalGate>();
-			if (equals && ggate.plugged && ggate.powered) {
-				Res[i].GetComponent<CheckOrX>().val = true;
-				HexColor.SetColor(Res[i],GameColors.on2);
-				Debug.Log("OH MY GOD ITS FUCKING TRUE");
-			}
-			else {
-				Res[i].GetComponent<CheckOrX>().val = false;
-				HexColor.SetColor(Res[i],GameColors.off2);
-				Debug.Log("OH MY GOD ITS FUCKING FALSE");
+		if (table != null) {
+			if (table.Count == goalTable.Count) {
+				for (int i = 0; i < table.Count; i++ ) {
+					bool equals = (table[i].TrueForAll(goalTable[i].Contains) && goalTable[i].TrueForAll(table[i].Contains));
+					GoalGate ggate = GameObject.Find("GoalBlock").GetComponent<GoalGate>();
+					if (equals && ggate.plugged && ggate.powered) {
+						Res[i].GetComponent<CheckOrX>().val = true;
+						HexColor.SetColor(Res[i],GameColors.on2);
+					}
+					else {
+						Res[i].GetComponent<CheckOrX>().val = false;
+						HexColor.SetColor(Res[i],GameColors.off2);
+					}
+				}
 			}
 		}
 	}

@@ -9,7 +9,7 @@ public class GoalGate : MonoBehaviour {
 	public bool input {
 		set {
 			_input = value;
-			if (plugged) {
+			if (plugged && powered) {
 				if (_input) {
 					SetColor(gameObject,GameColors.on);
 					SetColor(Input1,GameColors.on2);
@@ -29,7 +29,29 @@ public class GoalGate : MonoBehaviour {
 		}
 	}
 	public bool plugged = false;
-	public bool powered = false;
+	public bool _powered = false;
+	public bool powered {
+		set {
+			_powered = value;
+			if (plugged && _powered) {
+				if (_input) {
+					SetColor(gameObject,GameColors.on);
+					SetColor(Input1,GameColors.on2);
+				}
+				else {
+					SetColor(gameObject,GameColors.off);
+					SetColor(Input1,GameColors.off2);
+				}
+			}
+			else {
+				SetColor(gameObject,GameColors.inactive);
+				SetColor(Input1,GameColors.inactive2);
+			}
+		}
+		get {
+			return _powered;
+		}
+	}
 
 	void Start() {
 		Input1 = transform.FindChild("Input1").gameObject;
