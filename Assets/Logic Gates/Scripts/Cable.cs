@@ -37,7 +37,7 @@ public class Cable : MonoBehaviour {
 	public bool sparksVisible {
 		set {
 			_visible = value;
-			particleSystem.enableEmission = value;
+			GetComponent<ParticleSystem>().enableEmission = value;
 			shouldAnimate = value;
 		}
 		get {
@@ -78,7 +78,7 @@ public class Cable : MonoBehaviour {
 			shouldReset = false;
 		}
 		if (shouldAnimate) {
-			sparks.particleSystem.enableEmission = true;
+			sparks.GetComponent<ParticleSystem>().enableEmission = true;
 			if (connectionType == "powertogate") {
 				if (Vector3.Distance(sparks.transform.position,GateB.GetInputPos(side)) > 0.14f)
 					sparks.transform.position = Vector3.Lerp(sparks.transform.position,GateB.GetInputPos(side),Time.deltaTime);
@@ -99,7 +99,7 @@ public class Cable : MonoBehaviour {
 			}
 		}
 		else if (sparks != null) {
-			sparks.particleSystem.enableEmission = false;
+			sparks.GetComponent<ParticleSystem>().enableEmission = false;
 		}
 		if (cableShouldFollowMouse) {
 			Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);

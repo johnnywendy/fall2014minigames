@@ -70,7 +70,7 @@ public class CC_2_Manager : MonoBehaviour {
 		}
 		for (int i = count; i < shiftedWord.Count; i++) {
 			shiftedWord[i].text = "";
-			shiftedWord[i].rectTransform.parent.GetComponent<CC_Selector>().active = false;
+			shiftedWord[i].rectTransform.parent.GetComponent<CC_Selector>().enabled = false;
 		}
 	}
 
