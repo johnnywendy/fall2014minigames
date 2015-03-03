@@ -53,12 +53,10 @@ public class Cable : MonoBehaviour {
 
 	private LineRenderer myRenderer;
 	private Shader shaderGUItext;
-	private Shader shaderSpritesDefault;
 	
 	void Awake() {
 		myRenderer = gameObject.GetComponent<LineRenderer>();
 		shaderGUItext = Shader.Find("GUI/Text Shader");
-		shaderSpritesDefault = Shader.Find("Sprites/Default");
 		myRenderer.material.shader = shaderGUItext;
 	}
 

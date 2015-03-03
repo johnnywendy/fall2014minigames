@@ -31,12 +31,9 @@ public class LogicGate : MonoBehaviour {
 	private bool power1 = false;
 	private bool power2 = false;
 	private bool disableAfterStart = false;
-	private bool editMode = false;
-
-	private string hexColor;
+	
 	private SpriteRenderer myRenderer;
 	private Shader shaderGUItext;
-	private Shader shaderSpritesDefault;
 
 	private int _logicMode = 0;
 	public int logicMode {
@@ -64,7 +61,6 @@ public class LogicGate : MonoBehaviour {
 			}
 			else
 				return false;
-			return false;
 		}
 	}
 	
@@ -127,7 +123,6 @@ public class LogicGate : MonoBehaviour {
 	void Awake() {
 		myRenderer = gameObject.GetComponent<SpriteRenderer>();
 		shaderGUItext = Shader.Find("GUI/Text Shader");
-		shaderSpritesDefault = Shader.Find("Sprites/Default");
 	}
 
 	// Use this for initialization
@@ -176,14 +171,11 @@ public class LogicGate : MonoBehaviour {
 	}
 
 	public void SetColor(string hexCode) {
-		hexColor = hexCode;
 		myRenderer.material.shader = shaderGUItext;
 		myRenderer.color = HexColor.HexToColor(hexCode);
 	}
 
 	public void SetEditMode(bool val) {
-		editMode = val;
-		editMode = val;
 		Destroy.SetActive(val);
 		Reset.SetActive(val);
 	}

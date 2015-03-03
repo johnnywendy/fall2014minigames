@@ -4,7 +4,7 @@ using System.Collections;
 
 public class InputFieldEdit : MonoBehaviour {
 
-	InputField inputField;
+	/*InputField inputField;
 	public void OnInputFieldEdit() {
 		inputField.guiText.ToString ();
 		Debug.Log ("the Text!");
@@ -19,5 +19,5 @@ public class InputFieldEdit : MonoBehaviour {
 	public void Message2() {
 		Debug.Log ("This is a test");
 		
-	}
+	}*/
 }

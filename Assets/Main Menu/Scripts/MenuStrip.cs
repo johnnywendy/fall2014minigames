@@ -24,7 +24,6 @@ public class MenuStrip : MonoBehaviour {
 
 	private SpriteRenderer myRenderer;
 	private Shader shaderGUItext;
-	private Shader shaderSpritesDefault;
 
 	private float _position = 0;
 	public float position {
@@ -43,7 +42,6 @@ public class MenuStrip : MonoBehaviour {
 		startingZ = transform.position.z;
 		myRenderer = gameObject.GetComponent<SpriteRenderer>();
 		shaderGUItext = Shader.Find("GUI/Text Shader");
-		shaderSpritesDefault = Shader.Find("Sprites/Default");
 	}
 	
 	// Update is called once per frame

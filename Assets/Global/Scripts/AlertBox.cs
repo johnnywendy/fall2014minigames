@@ -69,7 +69,6 @@ public class AlertBox : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		Vector3 pos = transform.localPosition;
 		Vector3 scale = transform.localScale;
 		Quaternion rotation = transform.localRotation;
 		transform.SetParent(GameObject.Find ("Canvas").transform);

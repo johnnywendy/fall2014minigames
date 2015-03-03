@@ -19,7 +19,6 @@ public class LGManager_1 : MonoBehaviour {
 	public List<GameObject> buttons;
 	public int[] InvAmounts = new int[] {1,1,1,1,1,1,1};
 	public bool[] InvEnabled = new bool[] {true,true,true,true,true,true,true};
-	private int screenWidth = 0;
 
 	// Level Management
 	public int level = 1;
@@ -39,7 +38,6 @@ public class LGManager_1 : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		screenWidth = Screen.width;
 		goalGate = GameObject.Find("GoalBlock").GetComponent<GoalGate>() as GoalGate;
 
 		for (int i = 0; i < InvAmounts.Length; i++) {
@@ -227,7 +225,6 @@ public class LGManager_1 : MonoBehaviour {
 			obj.GetComponent<LogicGate>().SetEditMode(isEditing);
 		}
 		if (CanHoldObj()) {
-			bool shouldDelete = false;
 			GameObject newGate = (GameObject)Instantiate(Resources.Load("LogicGate", typeof(GameObject)),Camera.main.ScreenToWorldPoint(Input.mousePosition),Quaternion.identity);
 			if (newObject == "AndButton" && InvAmounts[0] > 0) {
 				InvAmounts[0] -= 1;

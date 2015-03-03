@@ -11,19 +11,18 @@ public class PowerSource : MonoBehaviour {
 	private Cable newCable = null;
 
 	private GameObject Output;
-	private Shader shaderGUItext;
 	private bool _output = true;
 	public bool output {
 		set {
 			_output = value;
 			UpdatePluggedGates();
 			if (_output) {
-				SetColor(gameObject,GameColors.on);
-				SetColor(Output,GameColors.on2);
+				HexColor.SetColor(gameObject,GameColors.on);
+				HexColor.SetColor(Output,GameColors.on2);
 			}
 			else {
-				SetColor(gameObject,GameColors.off);
-				SetColor(Output,GameColors.off2);
+				HexColor.SetColor(gameObject,GameColors.off);
+				HexColor.SetColor(Output,GameColors.off2);
 			}
 		}
 		get {
@@ -33,17 +32,11 @@ public class PowerSource : MonoBehaviour {
 
 	void Start() {
 		Output = transform.FindChild("Output").gameObject;
-		shaderGUItext = Shader.Find("GUI/Text Shader");
 		output = true;
 	}
 
 	void Update() {
 
-	}
-
-	public void SetColor(GameObject obj, string hexCode) {
-		obj.GetComponent<SpriteRenderer>().material.shader = shaderGUItext;
-		obj.GetComponent<SpriteRenderer>().color = HexColor.HexToColor(hexCode);
 	}
 
 	public void CablesShouldFollowTargets(bool value) {
