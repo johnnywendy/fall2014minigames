@@ -68,10 +68,15 @@ public class LogicGate : MonoBehaviour {
 		set {
 			_input1 = value;
 			updateOutput();
-			if (_input1)
-				HexColor.SetColor(Input1,GameColors.on);
-			else
-				HexColor.SetColor(Input1,GameColors.off);
+			if (power_output) {
+				if (_input1)
+					HexColor.SetColor(Input1,GameColors.on);
+				else
+					HexColor.SetColor(Input1,GameColors.off);
+			}
+			else {
+				HexColor.SetColor(Input1,GameColors.inactive);
+			}
 		}
 		get {
 			return _input1;
@@ -82,10 +87,15 @@ public class LogicGate : MonoBehaviour {
 		set {
 			_input2 = value;
 			updateOutput();
-			if (_input2)
-				HexColor.SetColor(Input2,GameColors.on);
-			else
-				HexColor.SetColor(Input2,GameColors.off);
+			if (power_output) {
+				if (_input2)
+					HexColor.SetColor(Input2,GameColors.on);
+				else
+					HexColor.SetColor(Input2,GameColors.off);
+			}
+			else {
+				HexColor.SetColor(Input2,GameColors.inactive);
+			}
 		}
 		get {
 			return _input2;
