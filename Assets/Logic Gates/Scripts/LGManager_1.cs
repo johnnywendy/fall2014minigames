@@ -63,6 +63,7 @@ public class LGManager_1 : MonoBehaviour {
 
 		level = GameData.GetCurrentLevel();
 		SetupNewLevel(level);
+		HexColor.SetColor(GameObject.Find ("CheckAnswer"),GameColors.inactive2);
 	}
 
 	// Update is called once per frame
@@ -97,6 +98,9 @@ public class LGManager_1 : MonoBehaviour {
 				Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 				
 				if (Physics.Raycast(ray, out hit)) {
+					if (hit.collider.transform.gameObject.name == "CheckAnswer") {
+						CheckAnswer();
+					}
 					if (!isConnectingObj) {
 						if (hit.collider.transform.gameObject.name == "Output") {
 							plugObj = hit.collider.transform.parent.gameObject;

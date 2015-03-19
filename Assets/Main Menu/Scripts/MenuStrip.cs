@@ -52,7 +52,7 @@ public class MenuStrip : MonoBehaviour {
 				position = (offsetPos.y + mousePos.y - startPos.y);
 			}
 		}
-		canInteract = Camera.main.GetComponent<MenuManager>().canInteract;
+		//canInteract = Camera.main.GetComponent<MenuManager>().canInteract;
 	}
 
 	void FixedUpdate() {
@@ -69,43 +69,46 @@ public class MenuStrip : MonoBehaviour {
 	}
 
 	void OnMouseEnter() {
-			acceptClick = true;
-			if (isClicking)
-				myRenderer.color = HexColor.AdjustHexToColor(hexColor,-40);
+		acceptClick = true;
+		if (isClicking)
+			myRenderer.color = HexColor.AdjustHexToColor(hexColor,-40);
 	}
 
 	void OnMouseExit() {
-			acceptClick = false;
-			if (isClicking)
-				myRenderer.color = HexColor.HexToColor(hexColor);
+		acceptClick = false;
+		if (isClicking)
+			myRenderer.color = HexColor.HexToColor(hexColor);
+		isClicking = false;
 	}
 
 	void OnMouseDown() {
-			if (allowDraggging) {
-				startPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-				offsetPos =  transform.position;
-				shouldTrack = true;
-			}
-			if (!isClicking)
-				myRenderer.color = HexColor.AdjustHexToColor(hexColor,-40);
-			isClicking = true;
+		acceptClick = true;
+		if (allowDraggging) {
+			startPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+			offsetPos =  transform.position;
+			shouldTrack = true;
+		}
+		if (!isClicking)
+			myRenderer.color = HexColor.AdjustHexToColor(hexColor,-40);
+		isClicking = true;
 	}
 
 	void OnMouseUp() {
-			if (allowDraggging)
-				shouldTrack = false;
-			else if (acceptClick) {
-				GameObject.Find("Main Camera").GetComponent<MenuManager>().LoadMenuForGame(gameNumber);
-			}
-			isClicking = false;
-			myRenderer.color = HexColor.HexToColor(hexColor);
+		if (allowDraggging)
+			shouldTrack = false;
+		else if (acceptClick) {
+			GameObject.Find("Main Camera").GetComponent<MenuManager>().LoadMenuForGame(gameNumber);
+		}
+		isClicking = false;
+		acceptClick = false;
+		myRenderer.color = HexColor.HexToColor(hexColor);
 	}
 
 	public void ResetSensitiveVars() {
 		isAnimating = false;
 		acceptClick = false;
 		isClicking = false;
-		canInteract = true;
+		Camera.main.GetComponent<MenuManager>().canInteract = true;
 	}
 
 	public void SetColor(string hexCode) {
@@ -121,7 +124,7 @@ public class MenuStrip : MonoBehaviour {
 	}
 
 	public void SlideToHeight(float height, float speed) {
-		canInteract = false;
+		Camera.main.GetComponent<MenuManager>().canInteract = false;
 		isAnimating = true;
 		targetHeight = height;
 		animateSpeed = speed;
@@ -129,7 +132,7 @@ public class MenuStrip : MonoBehaviour {
 
 	IEnumerator MakeInteractable() {
 		yield return new WaitForSeconds(0.3f);
-		canInteract = true;
+		Camera.main.GetComponent<MenuManager>().canInteract = true;
 	}
 
 }
