@@ -9,5 +9,5 @@ public static class GameColors {
 	public static string off2		= "f53457";
 	public static string inactive 	= "b3b3b3";
 	public static string inactive2 	= "d2d2d2";
-
+	public static string selected   = "36B1BF";
 }
