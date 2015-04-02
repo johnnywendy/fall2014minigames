@@ -12,7 +12,7 @@ public class CCManager : MonoBehaviour {
 	public GameObject heldObj;
 	private int _shiftAmount = 0;
 	private string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-	private string activeWord;
+	private string activeWord = "";
 	private int _activeIndex = 0;
 	public int activeIndex {
 		get {
@@ -20,14 +20,17 @@ public class CCManager : MonoBehaviour {
 		}
 		set {
 			_activeIndex = value;
-			HexColor.SetColor(encrypted[encrypted.Count-1-_activeIndex].gameObject,GameColors.off);
-			HexColor.SetColor(decrypted[decrypted.Count-1-_activeIndex].gameObject,GameColors.on2);
 			if (_activeIndex > 0) {
 				if (_activeIndex < activeWord.Length) 
 					SetupNextLetter();
 				else
 					GameOver();
 			}
+			if (_activeIndex == activeWord.Length && activeWord != "") {
+				return;
+			}
+			HexColor.SetColor(encrypted[encrypted.Count-1-_activeIndex].gameObject,GameColors.off);
+			HexColor.SetColor(decrypted[decrypted.Count-1-_activeIndex].gameObject,GameColors.on2);
 		}
 	}
 
@@ -47,7 +50,7 @@ public class CCManager : MonoBehaviour {
 				GameObject.Destroy(heldObj);
 				heldObj = null;
 			}
-			else {
+			else if (heldObj != null) {
 				heldObj.transform.localScale = heldObj.GetComponent<LetterBlock>().startScale;
 				IsCorrect(heldObj.GetComponent<LetterBlock>());
 			}
@@ -55,16 +58,29 @@ public class CCManager : MonoBehaviour {
 	}
 
 	public void StartNewGame() {
-		foreach (LetterBlock block in encrypted)
+		foreach (LetterBlock block in encrypted) {
 			HexColor.SetColor(block.gameObject,GameColors.inactive);
-		foreach (LetterBlock block in decrypted)
+			block.gameObject.SetActive(false);
+		}
+		foreach (LetterBlock block in decrypted) {
 			HexColor.SetColor(block.gameObject,GameColors.inactive2);
+			block.gameObject.SetActive(false);
+		}
 		activeIndex = 0;
 		Random.seed = (int)System.DateTime.Now.Ticks;
 		activeWord = words[Random.Range(0,words.Count)].ToUpper();
-		_shiftAmount = ((int)Random.Range (-5, 5));
+		_shiftAmount = ((int)Random.Range (-6, 6));
+		if (_shiftAmount == 0) {
+			int neg = Random.Range(1,2);
+			int add = Random.Range(1,6);
+			_shiftAmount += (neg == 1) ? (-add) : add;
+		}
 		shiftAmount.text = (-_shiftAmount).ToString();
 		encrypted[encrypted.Count-1-activeIndex].SetText(ShiftChar(activeWord[activeIndex].ToString(),_shiftAmount));
+		for (int i = 0; i < activeWord.Length; i++) {
+			encrypted[encrypted.Count-1-i].gameObject.SetActive(true);
+			decrypted[decrypted.Count-1-i].gameObject.SetActive(true);
+		}
 	}
 
 	void SetupNextLetter() {
@@ -74,7 +90,7 @@ public class CCManager : MonoBehaviour {
 	}
 
 	void GameOver() {
-
+		Application.LoadLevel("Main");
 	}
 
 	string ShiftChar(string chr, int amount) {

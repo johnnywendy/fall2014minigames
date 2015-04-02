@@ -63,7 +63,7 @@ public class LGManager_1 : MonoBehaviour {
 
 		level = GameData.GetCurrentLevel();
 		SetupNewLevel(level);
-		HexColor.SetColor(GameObject.Find ("CheckAnswer"),GameColors.inactive2);
+		HexColor.SetColor(GameObject.Find ("CheckAnswer"),GameColors.selected);
 	}
 
 	// Update is called once per frame
