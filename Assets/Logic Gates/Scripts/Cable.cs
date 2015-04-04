@@ -119,19 +119,22 @@ public class Cable : MonoBehaviour {
 				cable.material.color = Color.red;
 			}
 		}
-		if (cableShouldFollowTargets) {
-			if (connectionType == "powertogate") {
-				cable.SetPosition (0, PowerA.GetOutputPos());
-				cable.SetPosition (1, GateB.GetInputPos(side));
-			}
-			if (connectionType == "gatetogate") {
-				cable.SetPosition (0, GateA.GetOutputPos());
-				cable.SetPosition (1, GateB.GetInputPos(side));
-			}
-			if (connectionType == "gatetogoal") {
-				cable.SetPosition (0, GateA.GetOutputPos());
-				cable.SetPosition (1, GoalB.GetInputPos());
-			}
+		if (cableShouldFollowTargets)
+			AlignWithTarget();
+	}
+
+	public void AlignWithTarget() {
+		if (connectionType == "powertogate") {
+			cable.SetPosition (0, PowerA.GetOutputPos());
+			cable.SetPosition (1, GateB.GetInputPos(side));
+		}
+		if (connectionType == "gatetogate") {
+			cable.SetPosition (0, GateA.GetOutputPos());
+			cable.SetPosition (1, GateB.GetInputPos(side));
+		}
+		if (connectionType == "gatetogoal") {
+			cable.SetPosition (0, GateA.GetOutputPos());
+			cable.SetPosition (1, GoalB.GetInputPos());
 		}
 	}
 

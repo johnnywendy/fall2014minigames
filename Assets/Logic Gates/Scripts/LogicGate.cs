@@ -34,7 +34,7 @@ public class LogicGate : MonoBehaviour {
 	
 	private SpriteRenderer myRenderer;
 	private Shader shaderGUItext;
-
+	
 	private int _logicMode = 0;
 	public int logicMode {
 		set {
@@ -233,6 +233,7 @@ public class LogicGate : MonoBehaviour {
 			cable.cableShouldFollowTargets = value;
 			cable.shouldAnimate = !value;
 			cable.shouldReset = true;
+			cable.AlignWithTarget();
 		}
 	}
 
