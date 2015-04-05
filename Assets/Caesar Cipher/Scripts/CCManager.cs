@@ -9,6 +9,8 @@ public class CCManager : MonoBehaviour {
 	public List<LetterBlock> decrypted;
 	public List<LetterBlock> options;
 	public TextMesh shiftAmount;
+	public TextMesh shiftLetter;
+	public GameObject arrow;
 	public GameObject heldObj;
 	private int _shiftAmount = 0;
 	private string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -36,6 +38,8 @@ public class CCManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		HexColor.SetColor(arrow,GameColors.inactive);
+		shiftLetter.color = HexColor.HexToColor(GameColors.inactive);
 		shiftAmount.color = HexColor.HexToColor(GameColors.inactive);
 		Random.seed = (int)System.DateTime.Now.Ticks;
 		foreach (LetterBlock block in options)
@@ -69,14 +73,15 @@ public class CCManager : MonoBehaviour {
 		activeIndex = 0;
 		Random.seed = (int)System.DateTime.Now.Ticks;
 		activeWord = words[Random.Range(0,words.Count)].ToUpper();
-		_shiftAmount = ((int)Random.Range (-6, 6));
+		_shiftAmount = ((int)Random.Range (-4, 4));
 		if (_shiftAmount == 0) {
 			int neg = Random.Range(1,2);
-			int add = Random.Range(1,6);
+			int add = Random.Range(1,5);
 			_shiftAmount += (neg == 1) ? (-add) : add;
 		}
 		shiftAmount.text = (-_shiftAmount).ToString();
 		encrypted[encrypted.Count-1-activeIndex].SetText(ShiftChar(activeWord[activeIndex].ToString(),_shiftAmount));
+		shiftLetter.text = ShiftChar(activeWord[activeIndex].ToString(),_shiftAmount);
 		for (int i = 0; i < activeWord.Length; i++) {
 			encrypted[encrypted.Count-1-i].gameObject.SetActive(true);
 			decrypted[decrypted.Count-1-i].gameObject.SetActive(true);
@@ -84,13 +89,18 @@ public class CCManager : MonoBehaviour {
 	}
 
 	void SetupNextLetter() {
-		_shiftAmount = ((int)Random.Range (-5, 5));
+		_shiftAmount = ((int)Random.Range (-4, 4));
 		shiftAmount.text = (-_shiftAmount).ToString();
 		encrypted[encrypted.Count-1-activeIndex].SetText(ShiftChar(activeWord[activeIndex].ToString(),_shiftAmount));
+		shiftLetter.text = ShiftChar(activeWord[activeIndex].ToString(),_shiftAmount);
 	}
 
 	void GameOver() {
-		Application.LoadLevel("Main");
+		GameObject alert = (GameObject)Instantiate(Resources.Load("MsgSmall", typeof(GameObject)),Vector3.zero,Quaternion.identity);
+		MessageBox alertBox = alert.GetComponent<MessageBox>();
+		alertBox.message = "Great Job, you\ndecoded the message";
+		alertBox.SetLeftAction("loadscene","Main");
+		alertBox.SetRightAction("loadscene","Main");
 	}
 
 	string ShiftChar(string chr, int amount) {

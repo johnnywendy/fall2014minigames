@@ -84,6 +84,19 @@ public class LetterBlock : MonoBehaviour {
 		}
 	}
 
+	void OnTriggerStay2D(Collider2D other) {
+		if (isHeld && !isHittingCurrent) {
+			if (other.gameObject == gm.decrypted[gm.decrypted.Count-1-gm.activeIndex].gameObject) {
+				HexColor.SetColor(this.gameObject,GameColors.on);
+				isHittingCurrent = true;
+			}
+			else {
+				HexColor.SetColor(this.gameObject,GameColors.off);
+				isHittingCurrent = false;
+			}
+		}
+	}
+
 	void OnTriggerExit2D(Collider2D other) {
 		if (other.gameObject == gm.decrypted[gm.decrypted.Count-1-gm.activeIndex].gameObject) {
 			isHittingCurrent = false;

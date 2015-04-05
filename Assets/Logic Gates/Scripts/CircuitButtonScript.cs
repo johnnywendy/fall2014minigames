@@ -3,11 +3,19 @@ using System.Collections;
 
 public class CircuitButtonScript : MonoBehaviour {
 
+	public bool mouseDown = false;
+
 	void OnMouseDown() {
-		Camera.main.GetComponent<LGManager_1>().ButtonClicked(transform.name);
+		mouseDown = true;
 	}
 
 	void OnMouseUp() {
+		mouseDown = false;
+	}
 
+	void OnMouseExit() {
+		if (mouseDown)
+			Camera.main.GetComponent<LGManager_1>().ButtonClicked(transform.name);
+		mouseDown = false;
 	}
 }
