@@ -28,13 +28,28 @@ public class LGManager_1 : MonoBehaviour {
 
 	List<List<bool>> level1;
 	int[] inv1 = new int[] {0,0,0,2,0,0,0};
-	string message1 = "Congratulations, you just created a NOT gate.";
+	string message1 = "Congratulations, you just\ncreated a NOT gate.";
+	string hint1 = "Make a Not gate:\n1 NAND";
 	List<List<bool>> level2;
 	int[] inv2 = new int[] {0,0,2,2,0,0,0};
-	string message2 = "Congratulations, you just created an AND gate.";
+	string message2 = "Congratulations, you just\ncreated an AND gate.";
+	string hint2 = "Make an AND gate:\n1 NAND, 1 NOT";
 	List<List<bool>> level3;
 	int[] inv3 = new int[] {2,0,2,3,0,0,0};
-	string message3 = "Congratulations, you just created an OR gate.";
+	string message3 = "Congratulations, you just\ncreated an OR gate.";
+	string hint3 = "Make an OR gate:\n3 NAND";
+	List<List<bool>> level4;
+	int[] inv4 = new int[] {2,2,2,0,0,0,0};
+	string message4 = "Congratulations, you just\ncreated an NOR gate.";
+	string hint4 = "Make a NOR gate:\n2 NOT, 1 AND";
+	List<List<bool>> level5;
+	int[] inv5 = new int[] {2,2,0,2,2,0,0};
+	string message5 = "Congratulations, you just\ncreated an XOR gate.";
+	string hint5 = "Make a XOR gate:\n1 OR, 1 AND, 1 NAND";
+	List<List<bool>> level6;
+	int[] inv6 = new int[] {2,2,0,0,2,2,0};
+	string message6 = "Congratulations, you just\ncreated an XNOR gate.";
+	string hint6 = "Make a XNOR gate:\n1 NOT, 1 XOR";
 
 	// Use this for initialization
 	void Start () {
@@ -61,14 +76,33 @@ public class LGManager_1 : MonoBehaviour {
 		row4 = new List<bool>() {false,true,true};
 		level3 = new List<List<bool>>() {row1,row2,row3,row4};
 
+		row1 = new List<bool>() {false,false,true};
+		row2 = new List<bool>() {false,true,false};
+		row3 = new List<bool>() {true,false,false};
+		row4 = new List<bool>() {true,true,false};
+		level4 = new List<List<bool>>() {row1,row2,row3,row4};
+
+		row1 = new List<bool>() {false,false,false};
+		row2 = new List<bool>() {false,true,true};
+		row3 = new List<bool>() {true,false,true};
+		row4 = new List<bool>() {true,true,false};
+		level5 = new List<List<bool>>() {row1,row2,row3,row4};
+
+		row1 = new List<bool>() {false,false,true};
+		row2 = new List<bool>() {false,true,false};
+		row3 = new List<bool>() {true,false,false};
+		row4 = new List<bool>() {true,true,true};
+		level6 = new List<List<bool>>() {row1,row2,row3,row4};
+
 		level = GameData.GetCurrentLevel();
 		SetupNewLevel(level);
 		HexColor.SetColor(GameObject.Find ("CheckAnswer"),GameColors.selected);
+		HexColor.SetColor(GameObject.Find ("Hint"),GameColors.selected);
 	}
 
 	// Update is called once per frame
 	void Update () {
-		if (isHoldingObj) {
+		if (isHoldingObj && heldObj != null) {
 			heldObj.transform.position = VisibleMousePosition();
 		}
 
@@ -100,6 +134,9 @@ public class LGManager_1 : MonoBehaviour {
 				if (Physics.Raycast(ray, out hit)) {
 					if (hit.collider.transform.gameObject.name == "CheckAnswer") {
 						CheckAnswer();
+					}
+					if (hit.collider.transform.gameObject.name == "Hint") {
+						DisplayHint();
 					}
 					if (!isConnectingObj) {
 						if (hit.collider.transform.gameObject.name == "Output") {
@@ -291,7 +328,12 @@ public class LGManager_1 : MonoBehaviour {
 		}
 		powerSources = new List<PowerSource>();
 	}
-	
+
+	public void SetupNextLevel(int newLevel) {
+		level = newLevel;
+		SetupNewLevel(level);
+	}
+
 	public void SetupNewLevel(int level) {
 		ClearFloor ();
 		if (level == 1) {
@@ -305,6 +347,18 @@ public class LGManager_1 : MonoBehaviour {
 		if (level == 3) {
 			truthTable = level3;
 			InvAmounts = inv3;
+		}
+		if (level == 4) {
+			truthTable = level4;
+			InvAmounts = inv4;
+		}
+		if (level == 5) {
+			truthTable = level5;
+			InvAmounts = inv5;
+		}
+		if (level == 6) {
+			truthTable = level6;
+			InvAmounts = inv6;
 		}
 		for (int i = 0; i < InvAmounts.Length; i++) {
 			buttons[i].SetActive(InvEnabled[i]);
@@ -393,49 +447,6 @@ public class LGManager_1 : MonoBehaviour {
 		GameObject.Find ("TruthTable").GetComponent<TruthTable>().UpdateTable(GetCurrentTable());
 	}
 
-	/*public void CheckScenario() {
-		List<bool> currentScenario = new List<bool>();
-		foreach (PowerSource input in powerSources)
-			currentScenario.Add (input.output);
-		UpdateTruthTable(currentScenario,goalGate.input);
-	}
-
-	public void UpdateTruthTable(List<bool> currentScenario, bool currentOutput) {
-		int scenarioIndex = 0;
-		if (currentScenario[0] == true)
-			scenarioIndex += 1;
-		if (currentScenario.Count == 2)
-			if (currentScenario[1] == true)
-				scenarioIndex += 10;
-		if (currentScenario.Count == 3)
-			if (currentScenario[2] == true)
-				scenarioIndex += 100;
-		List<int> indexMap = new List<int> {0,1,10,11,100,101,110,111};
-		int actualIndex = -1;
-		for (int i = 0; i < indexMap.Count; i++)
-			if (indexMap[i] == scenarioIndex)
-				actualIndex = indexMap[i];
-		if (actualIndex > -1) {
-			currentScenario.Add(currentOutput);
-			CheckScenarioValidity(actualIndex,currentScenario);
-		}
-	}
-
-	void CheckScenarioValidity(int index,List<bool> currentScenario) {
-		bool correct = true;
-		for (int i = 0; i < currentScenario.Count; i++) {
-			Debug.Log(truthTable[index][i]+" --- "+currentScenario[i]);
-		}
-		for (int i = 0; i < currentScenario.Count; i++) {
-			if (truthTable[index][i] != currentScenario[i])
-				correct = false;
-		}
-		if (correct)
-			Debug.Log("CORRECT");
-		else
-			Debug.Log("INCORRECT");
-	}*/
-
 	void CheckCompletion(List<List<bool>> currentAnswer) {
 		bool correct = true;
 		for (int i = 0; i < currentAnswer.Count; i++) {
@@ -446,34 +457,56 @@ public class LGManager_1 : MonoBehaviour {
 		}
 		if (correct) {
 			Debug.Log("CORRECT");
-			GameObject alert = (GameObject)Instantiate(Resources.Load("Alert", typeof(GameObject)),Vector3.zero,Quaternion.identity);
-			AlertBox alertBox = alert.GetComponent<AlertBox>();
-			alertBox.title = "Correct";
+			GameObject alert = (GameObject)Instantiate(Resources.Load("MsgSmall", typeof(GameObject)),Vector3.zero,Quaternion.identity);
+			MessageBox alertBox = alert.GetComponent<MessageBox>();
 			if (level == 1)
 				alertBox.message = message1;
 			if (level == 2)
 				alertBox.message = message2;
 			if (level == 3)
 				alertBox.message = message3;
+			if (level == 4)
+				alertBox.message = message4;
+			if (level == 5)
+				alertBox.message = message5;
+			if (level == 6)
+				alertBox.message = message6;
 			alertBox.SetLeftAction("destroy");
-			level++;
-			if (level == 3) {
+			if (level == 6) {
 				alertBox.rightButtonText = "MENU";
 				alertBox.SetRightAction("loadscene","Main");
 			}
 			else {
 				alertBox.rightButtonText = "NEXT";
-				alertBox.SetRightAction(gameObject,"LGManager_1","SetupNewLevel",level);
+				alertBox.SetRightAction(gameObject,"LGManager_1","SetupNextLevel",(level+1));
 			}
 		}
 		else {
 			Debug.Log("INCORRECT");
-			GameObject alert = (GameObject)Instantiate(Resources.Load("Alert", typeof(GameObject)),Vector3.zero,Quaternion.identity);
-			AlertBox alertBox = alert.GetComponent<AlertBox>();
-			alertBox.title = "Incorrect";
-			alertBox.message = "Hmm, this doesn't look correct, try again.";
+			GameObject alert = (GameObject)Instantiate(Resources.Load("MsgSmall", typeof(GameObject)),Vector3.zero,Quaternion.identity);
+			MessageBox alertBox = alert.GetComponent<MessageBox>();
+			alertBox.message = "Hmm, this doesn't look\ncorrect, try again.";
 			alertBox.SetLeftAction("destroy");
 			alertBox.SetRightAction("destroy");
 		}
+	}
+
+	void DisplayHint() {
+		GameObject alert = (GameObject)Instantiate(Resources.Load("MsgSmall", typeof(GameObject)),Vector3.zero,Quaternion.identity);
+		MessageBox alertBox = alert.GetComponent<MessageBox>();
+		if (level == 1)
+			alertBox.message = hint1;
+		if (level == 2)
+			alertBox.message = hint2;
+		if (level == 3)
+			alertBox.message = hint3;
+		if (level == 4)
+			alertBox.message = hint4;
+		if (level == 5)
+			alertBox.message = hint5;
+		if (level == 6)
+			alertBox.message = hint6;
+		alertBox.SetLeftAction("destroy");
+		alertBox.SetRightAction("destroy");
 	}
 }

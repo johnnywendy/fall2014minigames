@@ -42,4 +42,11 @@ public static class HexColor {
 			obj.GetComponent<SpriteRenderer>().color = HexColor.HexToColor(hexCode);
 		}
 	}
+
+	public static void SetColorWithAlpha(GameObject obj, string hexCode, float alpha) {
+		if (obj != null) {
+			obj.GetComponent<SpriteRenderer>().material.shader = shaderGUItext;
+			obj.GetComponent<SpriteRenderer>().color = HexColor.HexToColorWithAlpha(hexCode,alpha);
+		}
+	}
 }

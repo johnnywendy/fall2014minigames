@@ -23,7 +23,12 @@ public class InGameMenu : MonoBehaviour {
 	// Update is called once per frame
 	void FixedUpdate () {
 		if (doSlerp) {
-			Camera.main.transform.position = Vector3.Slerp(Camera.main.transform.position, slerpPos, Time.deltaTime*4.5f);
+			if (Vector3.Distance(Camera.main.transform.position,slerpPos) > 0.01)
+				Camera.main.transform.position = Vector3.Slerp(Camera.main.transform.position, slerpPos, Time.deltaTime*4.5f);
+			else {
+				Camera.main.transform.position = slerpPos;
+				doSlerp = false;
+			}
 		}
 	}
 
