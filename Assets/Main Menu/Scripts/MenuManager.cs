@@ -27,6 +27,7 @@ public class MenuManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		ResetStripColors();
+		SetPercentage();
 	}
 
 	// Update is called once per frame
@@ -59,6 +60,15 @@ public class MenuManager : MonoBehaviour {
 			}
 			SlideUp(gameNumber);
 		}
+	}
+
+	void SetPercentage() {
+		float total = 0; float completed = 0;
+		for (int i = 0; i < 4; i++) {
+			total += GameData.GetLevelCount(i);
+			completed += GameData.GetCompletedCount(i);
+		}
+		GameObject.Find("PercentCompleted").GetComponent<TextMesh>().text = (System.Convert.ToInt32((completed/total)*100)).ToString()+"%";
 	}
 
 	public void SlideUp(int gameNumber) {

@@ -106,7 +106,7 @@ public class LGManager_1 : MonoBehaviour {
 			heldObj.transform.position = VisibleMousePosition();
 		}
 
-		// On Left Click
+		// On Left Click Down
 		if (Input.GetMouseButtonDown (0)) {
 			if (isHoldingObj || isEditing) {
 				if (isEditing) {
@@ -160,6 +160,8 @@ public class LGManager_1 : MonoBehaviour {
 				}
 			}
 		}
+
+		// On Left Click Up
 		if (Input.GetMouseButtonUp (0)) {
 			if (isHoldingObj) {
 				isHoldingObj = false;
@@ -224,7 +226,8 @@ public class LGManager_1 : MonoBehaviour {
 			}
 			GameObject.Find ("TruthTable").GetComponent<TruthTable>().UpdateTable(GetCurrentTable());
 		}
-		// On Right Click
+
+		// On Right Click Down
 		if (Input.GetMouseButtonDown (1)) {
 			if (!isHoldingObj) {
 				if (isEditing)
@@ -335,6 +338,7 @@ public class LGManager_1 : MonoBehaviour {
 	}
 
 	public void SetupNewLevel(int level) {
+		GameData.SetCurrentLevel(level);
 		ClearFloor ();
 		if (level == 1) {
 			truthTable = level1;
@@ -465,6 +469,8 @@ public class LGManager_1 : MonoBehaviour {
 					correct = false;
 		if (correct) {
 			Debug.Log("CORRECT");
+			Debug.Log(GameData.GetCurrentGame());
+			GameData.CompletedLevel(GameData.GetCurrentGame(),level);
 			GameObject alert = (GameObject)Instantiate(Resources.Load("MsgSmall", typeof(GameObject)),Vector3.zero,Quaternion.identity);
 			MessageBox alertBox = alert.GetComponent<MessageBox>();
 			if (level == 1)
