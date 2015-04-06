@@ -39,17 +39,17 @@ public class LGManager_1 : MonoBehaviour {
 	string message3 = "Congratulations, you just\ncreated an OR gate.";
 	string hint3 = "Make an OR gate:\n3 NAND";
 	List<List<bool>> level4;
-	int[] inv4 = new int[] {2,2,2,0,0,0,0};
+	int[] inv4 = new int[] {2,2,2,2,0,0,0};
 	string message4 = "Congratulations, you just\ncreated an NOR gate.";
 	string hint4 = "Make a NOR gate:\n2 NOT, 1 AND";
 	List<List<bool>> level5;
-	int[] inv5 = new int[] {2,2,0,2,2,0,0};
+	int[] inv5 = new int[] {2,2,2,2,2,0,0};
 	string message5 = "Congratulations, you just\ncreated an XOR gate.";
-	string hint5 = "Make a XOR gate:\n1 OR, 1 AND, 1 NAND";
+	string hint5 = "Make a XOR gate:\n1 OR, 1 NAND, 1 AND";
 	List<List<bool>> level6;
-	int[] inv6 = new int[] {2,2,0,0,2,2,0};
+	int[] inv6 = new int[] {2,2,2,2,2,2,0};
 	string message6 = "Congratulations, you just\ncreated an XNOR gate.";
-	string hint6 = "Make a XNOR gate:\n1 NOT, 1 XOR";
+	string hint6 = "Make an XNOR gate:\n1 XOR, 1 NOT";
 
 	// Use this for initialization
 	void Start () {
@@ -77,21 +77,21 @@ public class LGManager_1 : MonoBehaviour {
 		level3 = new List<List<bool>>() {row1,row2,row3,row4};
 
 		row1 = new List<bool>() {false,false,true};
-		row2 = new List<bool>() {false,true,false};
-		row3 = new List<bool>() {true,false,false};
-		row4 = new List<bool>() {true,true,false};
+		row2 = new List<bool>() {true,false,false};
+		row3 = new List<bool>() {true,true,false};
+		row4 = new List<bool>() {false,true,false};
 		level4 = new List<List<bool>>() {row1,row2,row3,row4};
 
 		row1 = new List<bool>() {false,false,false};
-		row2 = new List<bool>() {false,true,true};
-		row3 = new List<bool>() {true,false,true};
-		row4 = new List<bool>() {true,true,false};
+		row2 = new List<bool>() {true,false,true};
+		row3 = new List<bool>() {true,true,false};
+		row4 = new List<bool>() {false,true,true};
 		level5 = new List<List<bool>>() {row1,row2,row3,row4};
 
 		row1 = new List<bool>() {false,false,true};
-		row2 = new List<bool>() {false,true,false};
-		row3 = new List<bool>() {true,false,false};
-		row4 = new List<bool>() {true,true,true};
+		row2 = new List<bool>() {true,false,false};
+		row3 = new List<bool>() {true,true,true};
+		row4 = new List<bool>() {false,true,false};
 		level6 = new List<List<bool>>() {row1,row2,row3,row4};
 
 		level = GameData.GetCurrentLevel();
@@ -361,7 +361,11 @@ public class LGManager_1 : MonoBehaviour {
 			InvAmounts = inv6;
 		}
 		for (int i = 0; i < InvAmounts.Length; i++) {
-			buttons[i].SetActive(InvEnabled[i]);
+			buttons[i].SetActive(true);
+			if (InvAmounts[i] > 0)
+				buttons[i].transform.FindChild("ButtonIcon").GetComponent<LogicGate>().enabledInButtonMode = true;
+			else
+				buttons[i].transform.FindChild("ButtonIcon").GetComponent<LogicGate>().enabledInButtonMode = false;
 			buttons[i].transform.FindChild("Amount").GetComponent<TextMesh>().text = InvAmounts[i].ToString();
 		}
 		int numberOfSources = truthTable[0].Count-1;
@@ -394,11 +398,14 @@ public class LGManager_1 : MonoBehaviour {
 			input.SetOutput(false);
 		}
 		if (powerSources.Count == 1) {
+			powerSources[0].output = false;
 			currentTable.Add(GetRow());
 			powerSources[0].FlipOutput();
 			currentTable.Add(GetRow());
 		}
 		if (powerSources.Count == 2) {
+			powerSources[0].output = false;
+			powerSources[1].output = false;
 			currentTable.Add(GetRow());
 			powerSources[0].FlipOutput();
 			currentTable.Add(GetRow());
@@ -408,6 +415,9 @@ public class LGManager_1 : MonoBehaviour {
 			currentTable.Add(GetRow());
 		}
 		if (powerSources.Count == 3) {
+			powerSources[0].output = false;
+			powerSources[1].output = false;
+			powerSources[2].output = false;
 			currentTable.Add(GetRow());
 			powerSources[0].FlipOutput();
 			currentTable.Add(GetRow());
@@ -449,12 +459,10 @@ public class LGManager_1 : MonoBehaviour {
 
 	void CheckCompletion(List<List<bool>> currentAnswer) {
 		bool correct = true;
-		for (int i = 0; i < currentAnswer.Count; i++) {
-			for (int j = 0; j < currentAnswer[i].Count; j++) {
+		for (int i = 0; i < currentAnswer.Count; i++)
+			for (int j = 0; j < currentAnswer[i].Count; j++)
 				if (truthTable[i][j] != currentAnswer[i][j])
 					correct = false;
-			}
-		}
 		if (correct) {
 			Debug.Log("CORRECT");
 			GameObject alert = (GameObject)Instantiate(Resources.Load("MsgSmall", typeof(GameObject)),Vector3.zero,Quaternion.identity);

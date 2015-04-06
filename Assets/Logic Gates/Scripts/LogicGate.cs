@@ -34,7 +34,21 @@ public class LogicGate : MonoBehaviour {
 	
 	private SpriteRenderer myRenderer;
 	private Shader shaderGUItext;
-	
+
+	private bool _enabledInButtonMode = true;
+	public bool enabledInButtonMode {
+		get {
+			return _enabledInButtonMode;
+		}
+		set {
+			_enabledInButtonMode = value;
+			if (disableOnStart && !_enabledInButtonMode)
+				SetColor(GameColors.inactive2);
+			else
+				SetColor(colors[_logicMode]);
+		}
+	}
+
 	private int _logicMode = 0;
 	public int logicMode {
 		set {
@@ -46,7 +60,10 @@ public class LogicGate : MonoBehaviour {
 				Input2.SetActive(true);
 			transform.FindChild("Text").GetComponent<TextMesh>().text = labels[_logicMode];
 			myRenderer.sprite = Resources.Load<Sprite>(labels[_logicMode].ToLower()+"-gate");
-			SetColor(colors[_logicMode]);
+			if (disableOnStart && !enabledInButtonMode)
+				SetColor(GameColors.inactive);
+			else
+				SetColor(colors[_logicMode]);
 			updateOutput();
 		}
 		get {

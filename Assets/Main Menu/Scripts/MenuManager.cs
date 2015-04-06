@@ -19,6 +19,9 @@ public class MenuManager : MonoBehaviour {
 		GameData.RegisterGame(4,6);
 		GameData.CompletedLevel(0,1);
 		GameData.CompletedLevel(0,2);
+		GameData.CompletedLevel(0,3);
+		GameData.CompletedLevel(0,4);
+		GameData.CompletedLevel(0,5);
 	}
 
 	// Use this for initialization
