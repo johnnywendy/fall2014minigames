@@ -16,7 +16,7 @@ public class BinaryBlockRow : MonoBehaviour
 	GameObject bbr;
 	public bool solved = false;
 
-	bool goalNumSetByParent = false;
+		
 	int currentVal = 0;
 	int goalnum = 1;
 	void Start ()
@@ -26,6 +26,7 @@ public class BinaryBlockRow : MonoBehaviour
 		rowtransform = bbr.GetComponent<RectTransform> ();
 		rowtransform.localScale = new Vector3 (1, 1, 1);
 		rowtransform.localPosition = new Vector3 (rowtransform.localPosition.x - 100, rowtransform.localPosition.y, rowtransform.localPosition.z);
+
 				
 		c = gameObject.GetComponentInParent<Canvas> ();
 		if (!difficult) {
@@ -50,8 +51,8 @@ public class BinaryBlockRow : MonoBehaviour
 		
 		goaltxtrt.localPosition = new Vector3 (txtrt.localPosition.x + txtrt.rect.width + 5, txtrt.localPosition.y, 0);
 		goaltxtrt.localScale = new Vector3 (1, 1, 1);
-		if (!goalNumSetByParent)
-			goalnum = Random.Range (1, 255);
+
+		goalnum = Random.Range (1, 255);
 
 
 	}
@@ -131,7 +132,6 @@ public class BinaryBlockRow : MonoBehaviour
 
 		set {
 			goalnum = value;
-			goalNumSetByParent = true;
 		}
 	}
 
