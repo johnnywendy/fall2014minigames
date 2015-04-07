@@ -10,4 +10,5 @@ public static class GameColors {
 	public static string inactive 	= "b3b3b3";
 	public static string inactive2 	= "d2d2d2";
 	public static string selected   = "825DC2";
+
 }

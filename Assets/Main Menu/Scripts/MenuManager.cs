@@ -11,7 +11,6 @@ public class MenuManager : MonoBehaviour {
 	public bool canInteract = true;
 
 	void Awake() {
-		PlayerPrefs.DeleteAll();
 		GameData.RegisterGame(0,10);
 		GameData.RegisterGame(1,8);
 		GameData.RegisterGame(2,6);
