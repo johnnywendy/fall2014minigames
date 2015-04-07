@@ -469,7 +469,6 @@ public class LGManager_1 : MonoBehaviour {
 					correct = false;
 		if (correct) {
 			Debug.Log("CORRECT");
-			Debug.Log(GameData.GetCurrentGame());
 			GameData.CompletedLevel(GameData.GetCurrentGame(),level);
 			GameObject alert = (GameObject)Instantiate(Resources.Load("MsgSmall", typeof(GameObject)),Vector3.zero,Quaternion.identity);
 			MessageBox alertBox = alert.GetComponent<MessageBox>();
