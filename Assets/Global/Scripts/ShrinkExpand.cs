@@ -7,7 +7,7 @@ public class ShrinkExpand : MonoBehaviour {
 	private bool shouldExpand = false;
 	private bool shouldShrink = false;
 	private bool expanded = true;
-	
+
 	private Vector3 startScaleVec;
 	private float startScale;
 	private float shrunkScale;
@@ -53,8 +53,10 @@ public class ShrinkExpand : MonoBehaviour {
 	}
 	
 	public void Shrink() {
-		transform.localScale = startScaleVec;
-		expanded = false;
-		shouldShrink = true;
+		if (expanded) {
+			transform.localScale = startScaleVec;
+			expanded = false;
+			shouldShrink = true;
+		}
 	}
 }

@@ -72,30 +72,38 @@ public class MenuManager : MonoBehaviour {
 	}
 
 	public void SlideUp(int gameNumber) {
+		Debug.Log(gameNumber);
+		if (gameNumber == 6) return;
 		float delay = 0.02f;
 		int count = 1;
 		for (int i = 0; i < menuOptions.Count; i++) {
 			StartCoroutine(WaitAndSlideUp(menuOptions[i],delay));
 			delay += 0.06f;
 		}
-		foreach (CircleButton circle in circles)
-			circle.gameObject.SetActive(false);
-		for (int i = 0; i < GameData.GetLevelCount(gameNumber); i++) {
-			circles[i].gameObject.SetActive(true);
-			StartCoroutine(WaitAndExpandCircle(circles[i],delay));
-			circles[i].SetLevel(count,GameData.GetLevelCount(gameNumber),"");
-			count++;
-			delay += 0.06f;
+		if (gameNumber == 5) {
+			GameObject.Find ("Settings").GetComponent<ShrinkExpand>().Expand();
+			StartCoroutine(WaitAndFadeBackButton());
 		}
-		foreach (GameObject obj in GameObject.FindGameObjectsWithTag("ShrinkExpand1")) {
-			if (obj.name != "CircleButton" && obj.name != "LevelSelectionText")
-				obj.GetComponent<ShrinkExpand>().Shrink();
-			else if (obj.name == "LevelSelectionText")
-				obj.GetComponent<ShrinkExpand>().Expand();
+		else {
+			foreach (CircleButton circle in circles)
+				circle.gameObject.SetActive(false);
+			for (int i = 0; i < GameData.GetLevelCount(gameNumber); i++) {
+				circles[i].gameObject.SetActive(true);
+				StartCoroutine(WaitAndExpandCircle(circles[i],delay));
+				circles[i].SetLevel(count,GameData.GetLevelCount(gameNumber),"");
+				count++;
+				delay += 0.06f;
+			}
+			foreach (GameObject obj in GameObject.FindGameObjectsWithTag("ShrinkExpand1")) {
+				if (obj.name != "CircleButton" && obj.name != "LevelSelectionText")
+					obj.GetComponent<ShrinkExpand>().Shrink();
+				else if (obj.name == "LevelSelectionText")
+					obj.GetComponent<ShrinkExpand>().Expand();
+			}
+			string completed = GameData.GetCompletedCount(gameNumber).ToString() + " of " + GameData.GetLevelCount(gameNumber).ToString();
+			GameObject.Find ("LevelSelectionText").transform.FindChild("LevelsCompleted").GetComponent<TextMesh>().text = completed;
+			StartCoroutine(WaitAndFadeBackButton());
 		}
-		string completed = GameData.GetCompletedCount(gameNumber).ToString() + " of " + GameData.GetLevelCount(gameNumber).ToString();
-		GameObject.Find ("LevelSelectionText").transform.FindChild("LevelsCompleted").GetComponent<TextMesh>().text = completed;
-		StartCoroutine(WaitAndFadeBackButton());
 	}
 
 	public void SlideUpFromBottom() {
@@ -107,7 +115,7 @@ public class MenuManager : MonoBehaviour {
 			delay += 0.06f;
 		}
 		foreach (GameObject obj in GameObject.FindGameObjectsWithTag("ShrinkExpand1")) {
-			if (obj.name != "CircleButton" && obj.name != "LevelSelectionText")
+			if (obj.name != "CircleButton" && obj.name != "LevelSelectionText" && obj.name != "Settings")
 				obj.GetComponent<ShrinkExpand>().Expand();
 			else
 				obj.GetComponent<ShrinkExpand>().Shrink();

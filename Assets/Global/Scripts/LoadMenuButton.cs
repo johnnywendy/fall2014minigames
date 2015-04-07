@@ -5,7 +5,7 @@ public class LoadMenuButton : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-	
+		HexColor.SetColor(this.gameObject,GameColors.selected);
 	}
 	
 	// Update is called once per frame

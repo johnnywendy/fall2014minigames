@@ -3,8 +3,17 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class CCManager : MonoBehaviour {
-	
-	private List<string> words = new List<string>() {"test","hello","world"};
+
+	private int level = 0;
+	private List<string> words0 = new List<string>() {"test","hello","world"};
+	private List<string> words1 = new List<string>() {"test","hello","world"};
+	private List<string> words2 = new List<string>() {"test","hello","world"};
+	private List<string> words3 = new List<string>() {"test","hello","world"};
+	private List<string> words4 = new List<string>() {"test","hello","world"};
+	private List<string> words5 = new List<string>() {"test","hello","world"};
+	private List<string> words6 = new List<string>() {"test","hello","world"};
+	private List<string> words7 = new List<string>() {"test","hello","world"};
+
 	public List<LetterBlock> encrypted;
 	public List<LetterBlock> decrypted;
 	public List<LetterBlock> options;
@@ -38,6 +47,7 @@ public class CCManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		level = GameData.GetCurrentLevel();
 		HexColor.SetColor(arrow,GameColors.inactive);
 		shiftLetter.color = HexColor.HexToColor(GameColors.inactive);
 		shiftAmount.color = HexColor.HexToColor(GameColors.inactive);
@@ -72,7 +82,7 @@ public class CCManager : MonoBehaviour {
 		}
 		activeIndex = 0;
 		Random.seed = (int)System.DateTime.Now.Ticks;
-		activeWord = words[Random.Range(0,words.Count)].ToUpper();
+		activeWord = words0[Random.Range(0,words0.Count)].ToUpper();
 		_shiftAmount = ((int)Random.Range (-4, 4));
 		if (_shiftAmount == 0) {
 			int neg = Random.Range(1,2);
@@ -99,8 +109,16 @@ public class CCManager : MonoBehaviour {
 		GameObject alert = (GameObject)Instantiate(Resources.Load("MsgSmall", typeof(GameObject)),Vector3.zero,Quaternion.identity);
 		MessageBox alertBox = alert.GetComponent<MessageBox>();
 		alertBox.message = "Great Job, you\ndecoded the message";
-		alertBox.SetLeftAction("loadscene","Main");
-		alertBox.SetRightAction("loadscene","Main");
+		GameData.CompletedLevel(GameData.GetCurrentGame(),level);
+		if (level+1 != GameData.GetLevelCount(GameData.GetCurrentGame())) {
+			GameData.SetCurrentLevel(level+1);
+			alertBox.SetLeftAction("loadscene","iPadCaesar");
+			alertBox.SetRightAction("loadscene","iPadCaesar");
+		}
+		else {
+			alertBox.SetLeftAction("loadscene","Main");
+			alertBox.SetRightAction("loadscene","Main");
+		}
 	}
 
 	string ShiftChar(string chr, int amount) {
@@ -108,10 +126,6 @@ public class CCManager : MonoBehaviour {
 		if (index < 0) index += 26;
 		if (index > 26) index -= 26;
 		return alphabet[index].ToString();
-	}
-
-	void NextLetter() {
-
 	}
 
 	public void IsCorrect(LetterBlock block) {
