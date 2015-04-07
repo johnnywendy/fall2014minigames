@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using System.Collections.Generic;
 
+
 public class BinaryGame : MonoBehaviour
 {
 	public bool hard = false;
@@ -23,15 +24,30 @@ public class BinaryGame : MonoBehaviour
 	int rowxpos = -145;
 	int rowypos = -300;
 	BinaryBlockRow temp;
+	int level = -1;
+	int[,] numberProblems = new int[,] {{1,2,4,8,16,32,64,128},
+										{3,6,12,24,48,65,129,17,33,13,10,130,192,40},
+										{131,7,28,67,42,35,224,112,14,161},
+										{1}	};
+	int playerOnNum = 0;
+	int numberProblemsLength = 1;
+
 	void Start ()
 	{
+		level = GameData.GetCurrentLevel () - 1;
+		numberProblemsLength = numberProblems.GetLength (level);
 		for (int a =0; a<6; ++a) {
 			temp = gameObject.AddComponent<BinaryBlockRow> ();
+			temp.Goalnum = numberProblems [level, playerOnNum++];
+
 			blockrows.Add (temp);
+			//Debug.LogError (numberProblems [level, playerOnNum]);
 		}
 
 		scoretxt = score.GetComponent<Text> ();
 		timetxt = time.GetComponent<Text> ();
+
+
 
 	}
 	void FixedUpdate ()
@@ -44,7 +60,7 @@ public class BinaryGame : MonoBehaviour
 
 		if (!gameoverbool) {
 			incrementTime ();
-			if (timeTillNextRow <= 0 && nextRowFlag) {
+			if (playerOnNum + 1 < numberProblemsLength && timeTillNextRow <= 0 && nextRowFlag) {
 				nextRowFlag = false;
 				addNextRow ();
 			
@@ -116,6 +132,7 @@ public class BinaryGame : MonoBehaviour
 		} else {
 			timeTillNextRow = 20;
 			temp = gameObject.AddComponent<BinaryBlockRow> ();
+			temp.Goalnum = numberProblems [level, playerOnNum++];
 			temp.opacity (5);
 			blockrows.Add (temp);
 		}
