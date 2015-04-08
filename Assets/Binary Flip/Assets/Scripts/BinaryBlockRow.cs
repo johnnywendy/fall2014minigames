@@ -1,120 +1,112 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 
 public class BinaryBlockRow : MonoBehaviour
 {
-	NumBlock[] blockarr = new NumBlock[8];
-	Canvas c;
-	GameObject goaltxt;
-	GameObject txt;
-	RectTransform txtrt;
-	private Text rowtotal;
+	NumBlock[] blocks = new NumBlock[8];
+	private TextMesh currentNumTextMesh;
+	private TextMesh goalTextMesh;
 	public bool difficult;
-	RectTransform rowtransform;
-	RectTransform goaltxtrt;
+	Transform rowtransform;
 	GameObject bbr;
-	public bool solved = false;
-
+	bool solved = false;
 	bool goalNumSetByParent = false;
-	int currentVal = 0;
+	int currentNum = 0;
 	int goalnum = 1;
+	
 	void Start ()
 	{	
 		bbr = Instantiate (Resources.Load ("BinaryBlockRow", typeof(GameObject))) as GameObject;
-		bbr.transform.parent = GameObject.Find ("Canvas").transform;	
-		rowtransform = bbr.GetComponent<RectTransform> ();
-		rowtransform.localScale = new Vector3 (1, 1, 1);
-		rowtransform.localPosition = new Vector3 (rowtransform.localPosition.x - 100, rowtransform.localPosition.y, rowtransform.localPosition.z);
+		rowtransform = bbr.GetComponent<Transform> ();
+		//rowtransform.localScale = new Vector3 (1, 1, 1);
+		//rowtransform.localPosition = new Vector3 (rowtransform.localPosition.x - 100, rowtransform.localPosition.y, rowtransform.localPosition.z);
 				
-		c = gameObject.GetComponentInParent<Canvas> ();
-		if (!difficult) {
-			txt = Instantiate (Resources.Load ("txt", typeof(GameObject))) as GameObject;
-			txt.GetComponent<RectTransform> ().parent = c.transform;
-			txtrt = txt.GetComponent<RectTransform> ();
+		//c = gameObject.GetComponentInParent<Canvas> ();
+		  
+		currentNumTextMesh = bbr.GetComponentsInChildren<TextMesh> () [0];
+		if (difficult) {
+			//txt = Instantiate (Resources.Load ("txt", typeof(GameObject))) as GameObject;
+			//txt.GetComponent<RectTransform> ().parent = c.transform;
+			//txtrt = txt.GetComponent<RectTransform> ();
 			//string temp = "rowtransform x : " + rowtransform.localPosition.x.ToString () + "rowtransform width : " + rowtransform.rect.width.ToString () + "txtrw width : " + txtrt.rect.width.ToString ();
 			//Debug.Log (temp);
-			txtrt.localPosition = new Vector3 (rowtransform.localPosition.x + rowtransform.rect.width / 2 + txtrt.rect.width / 2 + 5, rowtransform.localPosition.y - 5, 0);
-			txtrt.localScale = new Vector3 (1, 1, 1);
-			
-			rowtotal = txt.GetComponent<Text> ();
+			//txtrt.localPosition = new Vector3 (rowtransform.localPosition.x + rowtransform.rect.width / 2 + txtrt.rect.width / 2 + 5, rowtransform.localPosition.y - 5, 0);
+			//txtrt.localScale = new Vector3 (1, 1, 1);
+			Destroy (currentNumTextMesh);
+
 		}
 
-		blockarr = bbr.GetComponentsInChildren<NumBlock> ();
+		blocks = bbr.GetComponentsInChildren<NumBlock> ();
+
+		//goaltxt = Instantiate (Resources.Load ("txt", typeof(GameObject))) as GameObject;
+		//goaltxt.GetComponent<RectTransform> ().parent = c.transform;
+		//goaltxtrt = goaltxt.GetComponent<Transform> ();
 		
-		
-		goaltxt = Instantiate (Resources.Load ("txt", typeof(GameObject))) as GameObject;
-		goaltxt.GetComponent<RectTransform> ().parent = c.transform;
-		
-		goaltxtrt = goaltxt.GetComponent<RectTransform> ();
-		
-		goaltxtrt.localPosition = new Vector3 (txtrt.localPosition.x + txtrt.rect.width + 5, txtrt.localPosition.y, 0);
-		goaltxtrt.localScale = new Vector3 (1, 1, 1);
+		//goaltxtrt.localPosition = new Vector3 (txtrt.localPosition.x + txtrt.rect.width + 5, txtrt.localPosition.y, 0);
+		//goaltxtrt.localScale = new Vector3 (1, 1, 1);
 		if (!goalNumSetByParent)
 			goalnum = Random.Range (1, 255);
+		goalTextMesh = bbr.GetComponentsInChildren<TextMesh> () [1];
+		goalTextMesh.text = goalnum.ToString ();
 
-
+		
 	}
 	
-
 	// Update is called once per frame
 	void Update ()
 	{
-		Text goaltxttemp = goaltxt.GetComponent<Text> ();
-		goaltxttemp.text = goalnum.ToString ();
-			
-		currentVal = 0;
+		currentNum = 0;
 		for (int a =0; a<8; a++) {
-			if (blockarr [a].getValue () == 1) {
-				currentVal += (int)System.Math.Pow (2, a);
+			if (blocks [a].getValue () == 1) {
+				currentNum += (int)System.Math.Pow (2, a);
 			}
 		}
-
 		if (!difficult) {
-			rowtotal.enabled = true;
-			rowtotal.fontStyle = FontStyle.Normal;
-			rowtotal.text = currentVal.ToString ();
-		} else {
-			rowtotal.enabled = false;
+			currentNumTextMesh.fontStyle = FontStyle.Normal;
+			currentNumTextMesh.text = currentNum.ToString ();
 		}
+
 			
 	}
 	public void rowSolved (float t)
 	{
 		for (int a =0; a<8; ++a) {
-			if (blockarr [a] != null)
-				blockarr [a].GetComponent<Image> ().color = new Color (0f, 255f, 45f);
+			if (blocks [a] != null)
+				blocks [a].GetComponent<Image> ().color = new Color (0f, 255f, 45f);
 		}
 		Invoke ("delete", t);
 	}
 	private void delete ()
 	{
-		Destroy (txt);
-		Destroy (goaltxt);
 		Destroy (bbr);
 		Destroy (this);
 	}
 
 	public void updatePos (Vector3 newpos)
 	{
-		if (rowtransform != null)
+		if (rowtransform != null) {
+			rowtransform.position = newpos;
+		}
+		/*	if (rowtransform != null)
 			rowtransform.localPosition = newpos;
 		if (txtrt != null)		
 			txtrt.localPosition = new Vector3 (rowtransform.localPosition.x + rowtransform.rect.width / 2 + txtrt.rect.width / 2 + 5, rowtransform.localPosition.y - 5, 0);
 		if (goaltxtrt != null)		
 			goaltxtrt.localPosition = new Vector3 (txtrt.localPosition.x + txtrt.rect.width + 5, txtrt.localPosition.y, 0);
+			*/
 	}
 
 	public void opacity (float timeleft)
 	{
 		for (int a =0; a<8; ++a) {
-			if (blockarr [a] != null)
-				blockarr [a].opacity (timeleft);
+			if (blocks [a] != null)
+				blocks [a].opacity (timeleft);
 		}
-		if (rowtotal != null && goaltxt != null) {
-			Color tempcolor = new Vector4 (rowtotal.color.r, rowtotal.color.g, rowtotal.color.b, ((5f - timeleft) / 5f));
-			rowtotal.color = tempcolor;
-			goaltxt.GetComponent<Text> ().color = tempcolor;
+		if (currentNumTextMesh != null && goalTextMesh != null) {
+			Color tempcolor = new Vector4 (currentNumTextMesh.color.r, currentNumTextMesh.color.g, currentNumTextMesh.color.b, ((5f - timeleft) / 5f));
+			currentNumTextMesh.color = tempcolor;
+			goalTextMesh.color = tempcolor;
 		}
 	}
 
@@ -137,27 +129,21 @@ public class BinaryBlockRow : MonoBehaviour
 
 	public int CurrentVal {
 		get {
-			return currentVal;
+			return currentNum;
+		}
+	}
+	public bool Solved {
+		get {
+			return solved;
+		}
+		set {
+			solved = value;
 		}
 	}
 
-		
-
-	public RectTransform Rowtransform {
+	public Transform Rowtransform {
 		get {
 			return rowtransform;
-		}
-	}
-
-	public RectTransform Goaltxtrt {
-		get {
-			return goaltxtrt;
-		}
-	}
-
-	public RectTransform Txtrt {
-		get {
-			return txtrt;
 		}
 	}
 }
