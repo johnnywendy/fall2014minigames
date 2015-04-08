@@ -105,7 +105,7 @@ public class BinaryGame : MonoBehaviour
 	{
 		for (int a = 0; a < blockrows.Count; ++a) {
 			if (blockrows [a].Rowtransform != null) {
-				Vector3 temp = new Vector3 (rowxpos, rowypos + a * 1, 0);
+				Vector3 temp = new Vector3 (rowxpos, rowypos + a * 1.05f, 0);
 				blockrows [a].Rowtransform.localPosition = Vector3.Lerp (blockrows [a].Rowtransform.localPosition, temp, Time.deltaTime);
 				//blockrows [a].Txtrt.localPosition = Vector3.Lerp (blockrows [a].Txtrt.localPosition, new Vector3 (temp.x + blockrows [a].Rowtransform.rect.width / 2 + blockrows [a].Txtrt.rect.width / 2 + 5, temp.y - 5, 0), Time.deltaTime);
 				//blockrows [a].Goaltxtrt.localPosition = Vector3.Lerp (blockrows [a].Goaltxtrt.localPosition, new Vector3 (blockrows [a].Txtrt.localPosition.x + blockrows [a].Txtrt.rect.width + 5, temp.y, 0), Time.deltaTime);
@@ -141,7 +141,7 @@ public class BinaryGame : MonoBehaviour
 	{
 		init = true;
 		for (int a =0; a< blockrows.Count; ++a) {
-			Vector3 tempv = new Vector3 (rowxpos, rowypos + a * 1, 0);
+			Vector3 tempv = new Vector3 (rowxpos, rowypos + a * 1.05f, 0);
 			if (blockrows [a] != null) {
 				blockrows [a].updatePos (tempv);
 				blockrows [a].updateDifficulty (medium);

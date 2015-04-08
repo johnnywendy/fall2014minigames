@@ -51,4 +51,9 @@ public class NumBlock : MonoBehaviour
 			return 0;
 	}
 
+	void OnMouseDown ()
+	{
+		changeValue ();
+	}
+
 }

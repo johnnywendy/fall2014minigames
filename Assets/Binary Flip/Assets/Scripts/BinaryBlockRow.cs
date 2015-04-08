@@ -14,6 +14,9 @@ public class BinaryBlockRow : MonoBehaviour
 	bool goalNumSetByParent = false;
 	int currentNum = 0;
 	int goalnum = 1;
+
+	//public GameObject currentNumGO;
+	//public GameObject goalNumGO;
 	
 	void Start ()
 	{	
@@ -24,7 +27,7 @@ public class BinaryBlockRow : MonoBehaviour
 				
 		//c = gameObject.GetComponentInParent<Canvas> ();
 		  
-		currentNumTextMesh = bbr.GetComponentsInChildren<TextMesh> () [0];
+		currentNumTextMesh = bbr.GetComponentsInChildren<TextMesh> () [8];
 		if (difficult) {
 			//txt = Instantiate (Resources.Load ("txt", typeof(GameObject))) as GameObject;
 			//txt.GetComponent<RectTransform> ().parent = c.transform;
@@ -47,7 +50,7 @@ public class BinaryBlockRow : MonoBehaviour
 		//goaltxtrt.localScale = new Vector3 (1, 1, 1);
 		if (!goalNumSetByParent)
 			goalnum = Random.Range (1, 255);
-		goalTextMesh = bbr.GetComponentsInChildren<TextMesh> () [1];
+		goalTextMesh = bbr.GetComponentsInChildren<TextMesh> () [9];
 		goalTextMesh.text = goalnum.ToString ();
 
 		
@@ -63,7 +66,7 @@ public class BinaryBlockRow : MonoBehaviour
 			}
 		}
 		if (!difficult) {
-			currentNumTextMesh.fontStyle = FontStyle.Normal;
+			//currentNumTextMesh.fontStyle = FontStyle.Normal;
 			currentNumTextMesh.text = currentNum.ToString ();
 		}
 
