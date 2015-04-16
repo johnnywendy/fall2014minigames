@@ -13,10 +13,12 @@ public class CCManager : MonoBehaviour {
 	private List<string> words5 = new List<string>() {"test","hello","world"};
 	private List<string> words6 = new List<string>() {"test","hello","world"};
 	private List<string> words7 = new List<string>() {"test","hello","world"};
-
+	int min = 0; int max = 0;
+	bool reshuffle = false;
 	public List<LetterBlock> encrypted;
 	public List<LetterBlock> decrypted;
 	public List<LetterBlock> options;
+	public List<TextMesh> shiftedAmounts;
 	public TextMesh shiftAmount;
 	public TextMesh shiftLetter;
 	public GameObject arrow;
@@ -48,6 +50,7 @@ public class CCManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		level = GameData.GetCurrentLevel();
+		Debug.Log(level);
 		HexColor.SetColor(arrow,GameColors.inactive);
 		shiftLetter.color = HexColor.HexToColor(GameColors.inactive);
 		shiftAmount.color = HexColor.HexToColor(GameColors.inactive);
@@ -80,14 +83,59 @@ public class CCManager : MonoBehaviour {
 			HexColor.SetColor(block.gameObject,GameColors.inactive2);
 			block.gameObject.SetActive(false);
 		}
+		foreach (TextMesh amnt in shiftedAmounts) {
+			amnt.color = HexColor.HexToColor(GameColors.inactive2);
+			amnt.gameObject.SetActive(false);
+		}
 		activeIndex = 0;
 		Random.seed = (int)System.DateTime.Now.Ticks;
 		activeWord = words0[Random.Range(0,words0.Count)].ToUpper();
-		_shiftAmount = ((int)Random.Range (-4, 4));
-		if (_shiftAmount == 0) {
-			int neg = Random.Range(1,2);
-			int add = Random.Range(1,5);
-			_shiftAmount += (neg == 1) ? (-add) : add;
+		if (level == 0) {
+			min = -1; max = 1;
+			reshuffle = false;
+		}
+		if (level == 1) {
+			min = -2; max = 2;
+			reshuffle = false;
+		}
+		if (level == 2) {
+			min = -3; max = 3;
+			reshuffle = false;
+		}
+		if (level == 3) {
+			min = -4; max = 4;
+			reshuffle = false;
+		}
+		if (level == 4) {
+			min = -2; max = 2;
+			reshuffle = true;
+		}
+		if (level == 5) {
+			min = -4; max = 4;
+			reshuffle = true;
+		}
+		if (level == 6) {
+			min = -5; max = 5;
+			reshuffle = true;
+		}
+		if (level == 7) {
+			min = -7; max = 7;
+			reshuffle = true;
+		}
+		if (level == 8) {
+			min = -8; max = 8;
+			reshuffle = true;
+		}
+		if (reshuffle) {
+			_shiftAmount = ((int)Random.Range (min, max));
+			if (_shiftAmount == 0) {
+				int neg = Random.Range(1,2);
+				int add = Random.Range(1,max);
+				_shiftAmount += (neg == 1) ? (-add) : add;
+			}
+		}
+		else {
+			_shiftAmount = ((int)Random.Range (1, 2)) == 1 ? min : max;
 		}
 		shiftAmount.text = (-_shiftAmount).ToString();
 		encrypted[encrypted.Count-1-activeIndex].SetText(ShiftChar(activeWord[activeIndex].ToString(),_shiftAmount));
@@ -99,7 +147,14 @@ public class CCManager : MonoBehaviour {
 	}
 
 	void SetupNextLetter() {
-		_shiftAmount = ((int)Random.Range (-4, 4));
+		if (reshuffle) {
+			_shiftAmount = ((int)Random.Range (min, max));
+			if (_shiftAmount == 0) {
+				int neg = Random.Range(1,2);
+				int add = Random.Range(1,max);
+				_shiftAmount += (neg == 1) ? (-add) : add;
+			}
+		}
 		shiftAmount.text = (-_shiftAmount).ToString();
 		encrypted[encrypted.Count-1-activeIndex].SetText(ShiftChar(activeWord[activeIndex].ToString(),_shiftAmount));
 		shiftLetter.text = ShiftChar(activeWord[activeIndex].ToString(),_shiftAmount);
@@ -110,7 +165,8 @@ public class CCManager : MonoBehaviour {
 		MessageBox alertBox = alert.GetComponent<MessageBox>();
 		alertBox.message = "Great Job, you\ndecoded the message";
 		GameData.CompletedLevel(GameData.GetCurrentGame(),level);
-		if (level+1 != GameData.GetLevelCount(GameData.GetCurrentGame())) {
+		GameData.SetCurrentLevel(level+1);
+		if (level != GameData.GetLevelCount(GameData.GetCurrentGame())) {
 			GameData.SetCurrentLevel(level+1);
 			alertBox.SetLeftAction("loadscene","iPadCaesar");
 			alertBox.SetRightAction("loadscene","iPadCaesar");
@@ -131,6 +187,10 @@ public class CCManager : MonoBehaviour {
 	public void IsCorrect(LetterBlock block) {
 		if (block.isHittingCurrent && block.letter.text.ToUpper() == activeWord[activeIndex].ToString().ToUpper()) {
 			decrypted[decrypted.Count-1-activeIndex].GetComponent<LetterBlock>().SetText(block.letter.text);
+			if (reshuffle) {
+				shiftedAmounts[activeIndex].gameObject.SetActive(true);
+				shiftedAmounts[activeIndex].text = shiftAmount.text;
+			}
 			HexColor.SetColor(decrypted[decrypted.Count-1-_activeIndex].gameObject,GameColors.on);
 			activeIndex++;
 		}
