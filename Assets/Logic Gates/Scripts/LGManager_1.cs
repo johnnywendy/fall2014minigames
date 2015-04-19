@@ -375,23 +375,39 @@ public class LGManager_1 : MonoBehaviour {
 		int numberOfSources = truthTable[0].Count-1;
 		if (numberOfSources == 1) {
 			GameObject powerSource1 = (GameObject)Instantiate(Resources.Load("PowerSource", typeof(GameObject)),new Vector3(-4.8f,1.7f,-0.5f),Quaternion.identity);
+			powerSource1.transform.GetComponentInChildren<TextMesh>().text = "A";
 			powerSources.Add(powerSource1.GetComponent<PowerSource>());
 		}
 		if (numberOfSources == 2) {
 			GameObject powerSource1 = (GameObject)Instantiate(Resources.Load("PowerSource", typeof(GameObject)),new Vector3(-4.8f,2.85f,-0.5f),Quaternion.identity);
+			powerSource1.transform.GetComponentInChildren<TextMesh>().text = "A";
 			powerSources.Add(powerSource1.GetComponent<PowerSource>());
 			GameObject powerSource2 = (GameObject)Instantiate(Resources.Load("PowerSource", typeof(GameObject)),new Vector3(-4.8f,0.55f,-0.5f),Quaternion.identity);
+			powerSource2.transform.GetComponentInChildren<TextMesh>().text = "B";
 			powerSources.Add(powerSource2.GetComponent<PowerSource>());
 		}
 		if (numberOfSources == 3) {
 			GameObject powerSource1 = (GameObject)Instantiate(Resources.Load("PowerSource", typeof(GameObject)),new Vector3(-4.8f,4f,-0.5f),Quaternion.identity);
+			powerSource1.transform.GetComponentInChildren<TextMesh>().text = "A";
 			powerSources.Add(powerSource1.GetComponent<PowerSource>());
 			GameObject powerSource2 = (GameObject)Instantiate(Resources.Load("PowerSource", typeof(GameObject)),new Vector3(-4.8f,1.7f,-0.5f),Quaternion.identity);
+			powerSource1.transform.GetComponentInChildren<TextMesh>().text = "B";
 			powerSources.Add(powerSource2.GetComponent<PowerSource>());
 			GameObject powerSource3 = (GameObject)Instantiate(Resources.Load("PowerSource", typeof(GameObject)),new Vector3(-4.8f,-0.6f,-0.5f),Quaternion.identity);
+			powerSource1.transform.GetComponentInChildren<TextMesh>().text = "C";
 			powerSources.Add(powerSource3.GetComponent<PowerSource>());
 		}
 		GameObject.Find ("TruthTable").GetComponent<TruthTable>().SetTable(truthTable);
+		if (level == 1) {
+			GameObject alert = (GameObject)Instantiate(Resources.Load("MsgSmall", typeof(GameObject)),Vector3.zero,Quaternion.identity);
+			MessageBox alertBox = alert.GetComponent<MessageBox>();
+			alertBox.message = "I see it's your first time playing.\nCheck out this quick tutorial!";
+			alertBox.rightButtonText = "OK";
+			alertBox.leftButtonText = "ALRIGHT";
+			GameObject tut = GameObject.Find ("Tutorial");
+			alertBox.SetLeftAction(tut,"TutorialScript","StartTutorial");
+			alertBox.SetRightAction(tut,"TutorialScript","StartTutorial");
+		}
 	}
 
 	public List<List<bool>> GetCurrentTable() {

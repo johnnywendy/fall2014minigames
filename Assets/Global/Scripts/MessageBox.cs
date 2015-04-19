@@ -149,10 +149,14 @@ public class MessageBox : MonoBehaviour {
 			Application.LoadLevel(_scene1);
 			return;
 		}
-		if (passParams1)
+		if (passParams1) {
+			GameObject.Destroy(gameObject);
 			_target1.GetComponent(_component1).SendMessage(_action1, _parameter1);
-		else
+		}
+		else {
+			GameObject.Destroy(gameObject);
 			_target1.GetComponent(_component1).SendMessage(_action1);
+		}
 	}
 	
 	public void SetRightAction(GameObject target, string component, string action, object parameter) {
