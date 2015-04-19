@@ -5,14 +5,13 @@ using System.Collections.Generic;
 public class CCManager : MonoBehaviour {
 
 	private int level = 0;
-	private List<string> words0 = new List<string>() {"test","hello","world"};
-	private List<string> words1 = new List<string>() {"test","hello","world"};
-	private List<string> words2 = new List<string>() {"test","hello","world"};
-	private List<string> words3 = new List<string>() {"test","hello","world"};
-	private List<string> words4 = new List<string>() {"test","hello","world"};
-	private List<string> words5 = new List<string>() {"test","hello","world"};
-	private List<string> words6 = new List<string>() {"test","hello","world"};
-	private List<string> words7 = new List<string>() {"test","hello","world"};
+	private List<string> words;
+	private List<string> words0 = new List<string>() {"Test"};
+	private List<string> words1 = new List<string>() {"Caesar","Cipher"};
+	private List<string> words2 = new List<string>() {"Circuits","Circuit"};
+	private List<string> words3 = new List<string>() {"Binary"};
+	private List<string> words4 = new List<string>() {"Launch"};
+	private List<string> words5 = new List<string>() {"Success"};
 	int min = 0; int max = 0;
 	bool reshuffle = false;
 	public List<LetterBlock> encrypted;
@@ -87,44 +86,79 @@ public class CCManager : MonoBehaviour {
 			amnt.color = HexColor.HexToColor(GameColors.inactive2);
 			amnt.gameObject.SetActive(false);
 		}
+		if (level == 1) {
+			words = words0;
+			min = -2; max = 2;
+			reshuffle = false;
+			GameObject alert = (GameObject)Instantiate(Resources.Load("MsgSmall", typeof(GameObject)),Vector3.zero,Quaternion.identity);
+			MessageBox alertBox = alert.GetComponent<MessageBox>();
+			alertBox.message = "Hey soldier! We need you to try\nout this new system to decode\nmesssages for us. Get to it!";
+			alertBox.leftButtonText = "ALRIGHT";
+			GameObject tut = GameObject.Find ("Tutorial");
+			alertBox.SetLeftAction(tut,"TutorialScript","StartTutorial");
+			alertBox.SetRightAction(tut,"TutorialScript","StartTutorial");
+		}
+		if (level == 2) {
+			words = words1;
+			min = -3; max = 3;
+			reshuffle = false;
+			GameObject alert = (GameObject)Instantiate(Resources.Load("MsgSmall", typeof(GameObject)),Vector3.zero,Quaternion.identity);
+			MessageBox alertBox = alert.GetComponent<MessageBox>();
+			alertBox.message = "Great, it works!\nSee what the next message is.";
+			alertBox.leftButtonText = "ALRIGHT";
+			alertBox.SetLeftAction("destroy");
+			alertBox.SetRightAction("destroy");
+		}
+		if (level == 3) {
+			words = words2;
+			min = -4; max = 4;
+			reshuffle = false;
+			GameObject alert = (GameObject)Instantiate(Resources.Load("MsgSmall", typeof(GameObject)),Vector3.zero,Quaternion.identity);
+			MessageBox alertBox = alert.GetComponent<MessageBox>();
+			alertBox.message = "Exactly! This method of\nencryption is called a Caesar Cipher\nLook, a new incoming message!";
+			alertBox.leftButtonText = "ALRIGHT";
+			alertBox.SetLeftAction("destroy");
+			alertBox.SetRightAction("destroy");
+		}
+		if (level == 4) {
+			words = words3;
+			min = -2; max = 2;
+			reshuffle = true;
+			GameObject alert = (GameObject)Instantiate(Resources.Load("MsgSmall", typeof(GameObject)),Vector3.zero,Quaternion.identity);
+			MessageBox alertBox = alert.GetComponent<MessageBox>();
+			alertBox.message = "Ah we need to use the circuits\nto wire up the launch console.\nBut what is next?";
+			alertBox.leftButtonText = "ALRIGHT";
+			alertBox.SetLeftAction("destroy");
+			alertBox.SetRightAction("destroy");
+		}
+		if (level == 5) {
+			words = words4;
+			min = -4; max = 4;
+			reshuffle = true;
+			GameObject alert = (GameObject)Instantiate(Resources.Load("MsgSmall", typeof(GameObject)),Vector3.zero,Quaternion.identity);
+			MessageBox alertBox = alert.GetComponent<MessageBox>();
+			alertBox.message = "Of course! We need to program\nthe console with binary. Let's see\nwhat the next messge is.";
+			alertBox.leftButtonText = "ALRIGHT";
+			alertBox.SetLeftAction("destroy");
+			alertBox.SetRightAction("destroy");
+		}
+		if (level == 6) {
+			words = words5;
+			min = -6; max = 6;
+			reshuffle = true;
+			GameObject alert = (GameObject)Instantiate(Resources.Load("MsgSmall", typeof(GameObject)),Vector3.zero,Quaternion.identity);
+			MessageBox alertBox = alert.GetComponent<MessageBox>();
+			alertBox.message = "Everything is a go, Launch\nthe payload! Did it work?";
+			alertBox.leftButtonText = "ALRIGHT";
+			alertBox.SetLeftAction("destroy");
+			alertBox.SetRightAction("destroy");
+		}
 		activeIndex = 0;
 		Random.seed = (int)System.DateTime.Now.Ticks;
-		activeWord = words0[Random.Range(0,words0.Count)].ToUpper();
+		activeWord = words[Random.Range(0,words.Count)].ToUpper();
 		if (level == 0) {
 			min = -1; max = 1;
 			reshuffle = false;
-		}
-		if (level == 1) {
-			min = -2; max = 2;
-			reshuffle = false;
-		}
-		if (level == 2) {
-			min = -3; max = 3;
-			reshuffle = false;
-		}
-		if (level == 3) {
-			min = -4; max = 4;
-			reshuffle = false;
-		}
-		if (level == 4) {
-			min = -2; max = 2;
-			reshuffle = true;
-		}
-		if (level == 5) {
-			min = -4; max = 4;
-			reshuffle = true;
-		}
-		if (level == 6) {
-			min = -5; max = 5;
-			reshuffle = true;
-		}
-		if (level == 7) {
-			min = -7; max = 7;
-			reshuffle = true;
-		}
-		if (level == 8) {
-			min = -8; max = 8;
-			reshuffle = true;
 		}
 		if (reshuffle) {
 			_shiftAmount = ((int)Random.Range (min, max));
@@ -172,6 +206,7 @@ public class CCManager : MonoBehaviour {
 			alertBox.SetRightAction("loadscene","iPadCaesar");
 		}
 		else {
+			alertBox.message = "Success! You've completed the\nmission. Try out another game!";
 			alertBox.SetLeftAction("loadscene","Main");
 			alertBox.SetRightAction("loadscene","Main");
 		}

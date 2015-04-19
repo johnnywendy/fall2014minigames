@@ -27,15 +27,15 @@ public class LGManager_1 : MonoBehaviour {
 	private GoalGate goalGate = null;
 
 	List<List<bool>> level1;
-	int[] inv1 = new int[] {0,0,0,2,0,0,0};
+	int[] inv1 = new int[] {0,0,0,1,0,0,0};
 	string message1 = "Congratulations, you just\ncreated a NOT gate.";
 	string hint1 = "Make a Not gate:\n1 NAND";
 	List<List<bool>> level2;
-	int[] inv2 = new int[] {0,0,2,2,0,0,0};
+	int[] inv2 = new int[] {0,0,1,1,0,0,0};
 	string message2 = "Congratulations, you just\ncreated an AND gate.";
 	string hint2 = "Make an AND gate:\n1 NAND, 1 NOT";
 	List<List<bool>> level3;
-	int[] inv3 = new int[] {2,0,2,3,0,0,0};
+	int[] inv3 = new int[] {2,0,1,3,0,0,0};
 	string message3 = "Congratulations, you just\ncreated an OR gate.";
 	string hint3 = "Make an OR gate:\n3 NAND";
 	List<List<bool>> level4;
@@ -405,6 +405,16 @@ public class LGManager_1 : MonoBehaviour {
 			alertBox.rightButtonText = "OK";
 			alertBox.leftButtonText = "ALRIGHT";
 			GameObject tut = GameObject.Find ("Tutorial");
+			alertBox.SetLeftAction(tut,"TutorialScript","StartTutorial");
+			alertBox.SetRightAction(tut,"TutorialScript","StartTutorial");
+		}
+		if (level == 2) {
+			GameObject alert = (GameObject)Instantiate(Resources.Load("MsgSmall", typeof(GameObject)),Vector3.zero,Quaternion.identity);
+			MessageBox alertBox = alert.GetComponent<MessageBox>();
+			alertBox.message = "Great Job! Here are\ntwo more quick tips!";
+			alertBox.rightButtonText = "OK";
+			alertBox.leftButtonText = "ALRIGHT";
+			GameObject tut = GameObject.Find ("Tutorial-2");
 			alertBox.SetLeftAction(tut,"TutorialScript","StartTutorial");
 			alertBox.SetRightAction(tut,"TutorialScript","StartTutorial");
 		}
