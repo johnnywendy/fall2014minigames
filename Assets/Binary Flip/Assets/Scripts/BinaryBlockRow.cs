@@ -12,8 +12,9 @@ public class BinaryBlockRow : MonoBehaviour
 	GameObject bbr;
 	bool solved = false;
 	bool goalNumSetByParent = false;
-	int currentNum = 0;
-	int goalnum = 1;
+	private int currentNum = 0;
+	private int goalnum = 1;
+	private bool currentNumBeingSet = false;
 
 	//public GameObject currentNumGO;
 	//public GameObject goalNumGO;
@@ -37,10 +38,9 @@ public class BinaryBlockRow : MonoBehaviour
 			//txtrt.localPosition = new Vector3 (rowtransform.localPosition.x + rowtransform.rect.width / 2 + txtrt.rect.width / 2 + 5, rowtransform.localPosition.y - 5, 0);
 			//txtrt.localScale = new Vector3 (1, 1, 1);
 			Destroy (currentNumTextMesh);
-
 		}
-
 		blocks = bbr.GetComponentsInChildren<NumBlock> ();
+
 
 		//goaltxt = Instantiate (Resources.Load ("txt", typeof(GameObject))) as GameObject;
 		//goaltxt.GetComponent<RectTransform> ().parent = c.transform;
@@ -52,21 +52,20 @@ public class BinaryBlockRow : MonoBehaviour
 			goalnum = Random.Range (1, 255);
 		goalTextMesh = bbr.GetComponentsInChildren<TextMesh> () [9];
 		goalTextMesh.text = goalnum.ToString ();
-
-		
 	}
 	
 	// Update is called once per frame
 	void Update ()
 	{
+		currentNumBeingSet = true;
 		currentNum = 0;
 		for (int a =0; a<8; a++) {
 			if (blocks [a].getValue () == 1) {
 				currentNum += (int)System.Math.Pow (2, a);
 			}
 		}
+		currentNumBeingSet = false;
 		if (!difficult) {
-			//currentNumTextMesh.fontStyle = FontStyle.Normal;
 			currentNumTextMesh.text = currentNum.ToString ();
 		}
 
@@ -76,12 +75,13 @@ public class BinaryBlockRow : MonoBehaviour
 	{
 		for (int a =0; a<8; ++a) {
 			if (blocks [a] != null)
-				blocks [a].GetComponent<Image> ().color = new Color (0f, 255f, 45f);
+				blocks [a].GetComponent<SpriteRenderer> ().color = new Color (0f, 255f, 45f);
 		}
 		Invoke ("delete", t);
 	}
 	private void delete ()
 	{
+
 		Destroy (bbr);
 		Destroy (this);
 	}
@@ -132,15 +132,11 @@ public class BinaryBlockRow : MonoBehaviour
 
 	public int CurrentVal {
 		get {
-			return currentNum;
-		}
-	}
-	public bool Solved {
-		get {
-			return solved;
-		}
-		set {
-			solved = value;
+			if (currentNumBeingSet) {
+				return 257;
+			} else {
+				return currentNum;
+			}
 		}
 	}
 

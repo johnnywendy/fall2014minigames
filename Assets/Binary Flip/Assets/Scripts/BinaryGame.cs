@@ -9,7 +9,7 @@ public class BinaryGame : MonoBehaviour
 	public bool medium = false;
 	//BinaryBlockRow[] blockrows = new BinaryBlockRow[6];
 	System.Collections.Generic.List<BinaryBlockRow> blockrows = new List<BinaryBlockRow> ();
-
+	List<int> rowsToRemove = new List<int> ();
 	bool init = false;
 	bool nextRowFlag = true;
 	private bool gameoverbool = false;
@@ -94,7 +94,7 @@ public class BinaryGame : MonoBehaviour
 		for (int a =0; a<blockrows.Count; ++a) {
 			//Debug.Log (a.ToString () + " val: " + blockrows [a].CurrentVal.ToString ());
 			if (blockrows [a] != null) {
-				if (blockrows [a].CurrentVal == blockrows [a].Goalnum) {
+				if (!rowsToRemove.Contains (a) && blockrows [a].CurrentVal == blockrows [a].Goalnum) {
 					rowSolved (a);
 				}
 			}
@@ -150,14 +150,25 @@ public class BinaryGame : MonoBehaviour
 
 	}
 
+	private void removeRowsSolved ()
+	{
+		for (int a =0; a<rowsToRemove.Count; ++a) {
+			blockrows.RemoveAt (rowsToRemove [a]);
+
+		}
+		rowsToRemove.Clear ();
+	}
+
 	private void rowSolved (int a)
 	{
-		float time = .1f;
+		float time = .5f;
 
 		if (blockrows [a] != null)
 			blockrows [a].rowSolved (time);
 		scorenum += (100 - totalTimePassed);
-		blockrows.RemoveAt (a);
+		rowsToRemove.Add (a);
+		Invoke ("removeRowsSolved", time);
+		//blockrows.RemoveAt (a);
 	
 	}
 
