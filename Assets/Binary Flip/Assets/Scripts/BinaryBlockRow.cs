@@ -75,13 +75,14 @@ public class BinaryBlockRow : MonoBehaviour
 	{
 		for (int a =0; a<8; ++a) {
 			if (blocks [a] != null)
-				blocks [a].GetComponent<SpriteRenderer> ().color = new Color (0f, 255f, 45f);
+				blocks [a].Solved = true;
+			//blocks [a].GetComponent<SpriteRenderer> ().color = new Color (0f, 255f, 45f);
+			//0,255,45
 		}
-		Invoke ("delete", t);
+		Invoke ("selfdestruct", t);
 	}
-	private void delete ()
+	private void selfdestruct ()
 	{
-
 		Destroy (bbr);
 		Destroy (this);
 	}

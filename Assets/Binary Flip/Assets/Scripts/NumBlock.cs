@@ -4,21 +4,27 @@ using System.Collections;
 
 public class NumBlock : MonoBehaviour
 {
-	bool value = false;
-	TextMesh txtMesh;
-	Image img;
+	private bool buttonOn = false;
+	private TextMesh txtMesh;
+	private SpriteRenderer spr;
+	private Color onColor, offColor, solvedColor;
+	private bool solved = false;
+	private static Shader shaderGUItext = Shader.Find ("GUI/Text Shader");
 	void Start ()
 	{
-		img = gameObject.GetComponent<Image> ();
+		spr = gameObject.GetComponent<SpriteRenderer> ();
+		spr.material.shader = shaderGUItext;
 		txtMesh = gameObject.GetComponentInChildren<TextMesh> ();
-		//txtMesh = gameObject.GetComponent<TextMesh> ();
+		onColor = HexColor.HexToColor (GameColors.selected);
+		offColor = HexColor.HexToColor (GameColors.inactive);
+		solvedColor = HexColor.HexToColor (GameColors.on2);
+		spr.color = offColor;
 	}
-	
 
 	// Update is called once per frame
 	void Update ()
 	{
-		if (value)
+		if (buttonOn)
 			txtMesh.text = "1";
 		else
 			txtMesh.text = "0";
@@ -30,25 +36,41 @@ public class NumBlock : MonoBehaviour
 
 	public void opacity (float timeleft)
 	{
-		if (txtMesh != null && img != null) {
+		if (txtMesh != null && spr != null) {
 			Color tempc = txtMesh.color;
 			txtMesh.color = new Vector4 (tempc.r, tempc.g, tempc.b, ((5f - timeleft) / 5f));
-			tempc = img.color;
-			img.color = new Vector4 (tempc.r, tempc.g, tempc.b, ((5f - timeleft) / 5f) * (150f / 255f));
+			tempc = spr.color;
+			spr.color = new Vector4 (tempc.r, tempc.g, tempc.b, ((5f - timeleft) / 5f));
 		}
 	}
 
-	public void changeValue ()
+	private void changeValue ()
 	{
-		value = !value;
+		buttonOn = !buttonOn;
+		if (buttonOn) {
+			spr.color = onColor;
+		} else {
+			spr.color = offColor;
+		}
 	}
 
 	public int getValue ()
 	{
-		if (value)
+		if (buttonOn)
 			return 1;
 		else
 			return 0;
+	}
+
+	public bool Solved {
+		get {
+			return solved;
+		}
+		set {
+			solved = value;
+			if (value)
+				spr.color = solvedColor;
+		}
 	}
 
 	void OnMouseDown ()
