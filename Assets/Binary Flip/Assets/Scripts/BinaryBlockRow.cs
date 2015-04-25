@@ -7,7 +7,6 @@ public class BinaryBlockRow : MonoBehaviour
 	NumBlock[] blocks = new NumBlock[8];
 	private TextMesh currentNumTextMesh;
 	private TextMesh goalTextMesh;
-	public bool difficult;
 	Transform rowtransform;
 	GameObject bbr;
 	bool solved = false;
@@ -15,6 +14,7 @@ public class BinaryBlockRow : MonoBehaviour
 	private int currentNum = 0;
 	private int goalnum = 1;
 	private bool currentNumBeingSet = false;
+	Vector3 startingPostionSetByParent;
 
 	//public GameObject currentNumGO;
 	//public GameObject goalNumGO;
@@ -23,22 +23,15 @@ public class BinaryBlockRow : MonoBehaviour
 	{	
 		bbr = Instantiate (Resources.Load ("BinaryBlockRow", typeof(GameObject))) as GameObject;
 		rowtransform = bbr.GetComponent<Transform> ();
+		if (startingPostionSetByParent != null) {
+			updatePos (startingPostionSetByParent);
+		}
 		//rowtransform.localScale = new Vector3 (1, 1, 1);
 		//rowtransform.localPosition = new Vector3 (rowtransform.localPosition.x - 100, rowtransform.localPosition.y, rowtransform.localPosition.z);
 				
 		//c = gameObject.GetComponentInParent<Canvas> ();
 		  
 		currentNumTextMesh = bbr.GetComponentsInChildren<TextMesh> () [8];
-		if (difficult) {
-			//txt = Instantiate (Resources.Load ("txt", typeof(GameObject))) as GameObject;
-			//txt.GetComponent<RectTransform> ().parent = c.transform;
-			//txtrt = txt.GetComponent<RectTransform> ();
-			//string temp = "rowtransform x : " + rowtransform.localPosition.x.ToString () + "rowtransform width : " + rowtransform.rect.width.ToString () + "txtrw width : " + txtrt.rect.width.ToString ();
-			//Debug.Log (temp);
-			//txtrt.localPosition = new Vector3 (rowtransform.localPosition.x + rowtransform.rect.width / 2 + txtrt.rect.width / 2 + 5, rowtransform.localPosition.y - 5, 0);
-			//txtrt.localScale = new Vector3 (1, 1, 1);
-			Destroy (currentNumTextMesh);
-		}
 		blocks = bbr.GetComponentsInChildren<NumBlock> ();
 
 
@@ -65,9 +58,8 @@ public class BinaryBlockRow : MonoBehaviour
 			}
 		}
 		currentNumBeingSet = false;
-		if (!difficult) {
-			currentNumTextMesh.text = currentNum.ToString ();
-		}
+		currentNumTextMesh.text = currentNum.ToString ();
+
 
 			
 	}
@@ -90,7 +82,9 @@ public class BinaryBlockRow : MonoBehaviour
 	public void updatePos (Vector3 newpos)
 	{
 		if (rowtransform != null) {
-			rowtransform.position = newpos;
+			rowtransform.localPosition = newpos;
+		} else {
+			startingPostionSetByParent = newpos;
 		}
 		/*	if (rowtransform != null)
 			rowtransform.localPosition = newpos;
@@ -112,12 +106,6 @@ public class BinaryBlockRow : MonoBehaviour
 			currentNumTextMesh.color = tempcolor;
 			goalTextMesh.color = tempcolor;
 		}
-	}
-
-	public void updateDifficulty (bool d)
-	{
-		difficult = d;
-
 	}
 
 	public int Goalnum {

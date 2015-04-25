@@ -5,8 +5,6 @@ using System.Collections.Generic;
 
 public class BinaryGame : MonoBehaviour
 {
-	public bool hard = false;
-	public bool medium = false;
 	//BinaryBlockRow[] blockrows = new BinaryBlockRow[6];
 	System.Collections.Generic.List<BinaryBlockRow> blockrows = new List<BinaryBlockRow> ();
 	List<int> rowsToRemove = new List<int> ();
@@ -15,6 +13,7 @@ public class BinaryGame : MonoBehaviour
 	private bool gameoverbool = false;
 	public GameObject score;
 	public GameObject time;
+	public GameObject timeText;
 	TextMesh scoreTextMesh;
 	TextMesh timeTextMesh;
 	float scorenum = 0;
@@ -24,7 +23,6 @@ public class BinaryGame : MonoBehaviour
 	int lastnumofRows = 6;
 	int rowxpos = -5;
 	int rowypos = -4;
-	BinaryBlockRow temp;
 	int level = -1;
 	/*int[,] numberProblems = new int[,] {{1,2,4,8,16,32,64,128},
 										{3,6,12,24,48,65,129,17,33,13,10,130,192,40},
@@ -35,33 +33,85 @@ public class BinaryGame : MonoBehaviour
 		new List<int> {1, 2, 4, 8, 16, 32, 64, 128},
 		new List<int> {3, 6, 12, 24, 48, 65, 129, 17, 33, 13, 10, 130, 192, 40},
 		new List<int> {131, 7, 28, 67, 42, 35, 224, 112, 14, 161},
-		new List<int> {1},
-		new List<int> {1},
-		new List<int> {1},
-		new List<int> {1},
-		new List<int> {1}
+		new List<int> {-1},
+		new List<int> {-1},
+		new List<int> {-1},
+		new List<int> {-1},
+		new List<int> {-1}
 	};
 	int[] rowTimesPerLevel = new int[] {9,10,10,10,10,10,10,10};
 	int playerOnProblemNum = 0;
 	int numberProblemsLength = 1;
+	bool generateRandomProblemNums = false;
+	bool timeLimitOnThisLevel = false;
 
 	void Start ()
 	{
 		level = GameData.GetCurrentLevel () - 1;
-		maxTimeTillNextRow = rowTimesPerLevel [level];
+		level = 3;
+		if (numberProblems [level] [0] == -1) {
+			generateRandomProblemNums = true;
+		} else {
+			generateRandomProblemNums = false;
+		}
+		if (level == 7) {
+			timeLimitOnThisLevel = true;
+		} else {
+			timeLimitOnThisLevel = false;
+		}
+		if (timeLimitOnThisLevel) {
+			maxTimeTillNextRow = 15;
+		} else {
+			maxTimeTillNextRow = 4;
+			Destroy (time);
+			Destroy (timeText);
+		}
 		timeTillNextRow = maxTimeTillNextRow;
-		//numberProblemsLength = numberProblems.GetLength (level);
-		numberProblemsLength = numberProblems [level].Count;
-		for (int a =0; a<6; ++a) {
+		switch (level) {
+		case 0:
+			numberProblemsLength = numberProblems [level].Count;
+			break;
+		case 1:
+			numberProblemsLength = numberProblems [level].Count;
+			break;
+		case 2:
+			numberProblemsLength = numberProblems [level].Count;
+			break;
+		case 3:
+			numberProblemsLength = 17;
+			break;
+		case 4:
+			numberProblemsLength = 24;
+			break;
+		case 5:
+			numberProblemsLength = 30;
+			break;
+		case 6:
+			numberProblemsLength = 40;
+			break;
+		case 7:
+			numberProblemsLength = 1000;
+			break;
+		default:
+			numberProblemsLength = 5;
+			break;
+		}
+		BinaryBlockRow temp;
+		for (int a =0; a<5; ++a) {
 			temp = gameObject.AddComponent<BinaryBlockRow> ();
-			temp.Goalnum = numberProblems [level] [playerOnProblemNum++];
-
+			if (generateRandomProblemNums) {
+				temp.Goalnum = randomProblemNumber ();
+			} else {
+				temp.Goalnum = numberProblems [level] [playerOnProblemNum++];
+			}
 			blockrows.Add (temp);
 			//Debug.LogError (numberProblems [level, playerOnNum]);
 		}
 
 		scoreTextMesh = score.GetComponent<TextMesh> ();
-		timeTextMesh = time.GetComponent<TextMesh> ();
+		if (timeLimitOnThisLevel) {
+			timeTextMesh = time.GetComponent<TextMesh> ();
+		}
 
 
 
@@ -76,22 +126,22 @@ public class BinaryGame : MonoBehaviour
 
 		if (!gameoverbool) {
 			incrementTime ();
-			if (playerOnProblemNum + 1 < numberProblemsLength && timeTillNextRow <= 0f && nextRowFlag) {
+			if (nextRowFlag && playerOnProblemNum + 1 < numberProblemsLength && ((!timeLimitOnThisLevel && blockrows.Count < 5) || (timeLimitOnThisLevel && timeTillNextRow <= 0f))) {
 				nextRowFlag = false;
 				addNextRow ();
-			
-			} else {
-				nextRowFlag = true;
 			}
 
 			if (!init) {
 				initializeRowPlacement ();
 			}
-
-			if (timeTillNextRow <= 4) {
-				blockrows [blockrows.Count - 1].opacity (timeTillNextRow);
+			if (timeLimitOnThisLevel) {
+				if (timeTillNextRow <= 4) {
+					blockrows [blockrows.Count - 1].opacity (timeTillNextRow);
+				} else {
+					blockrows [blockrows.Count - 1].opacity (5);
+				}
 			} else {
-				blockrows [blockrows.Count - 1].opacity (5);
+				blockrows [blockrows.Count - 1].opacity (timeTillNextRow);
 			}
 
 			updateNumbers ();
@@ -133,25 +183,79 @@ public class BinaryGame : MonoBehaviour
 	void updateNumbers ()
 	{
 		scoreTextMesh.text = scorenum.ToString ("0000");
-		timeTextMesh.text = timeTillNextRow.ToString ("00");
+		if (timeLimitOnThisLevel) {
+			timeTextMesh.text = timeTillNextRow.ToString ("00");
+		}
 	}
 
 	private void incrementTime ()
 	{
-		timeTillNextRow -= Time.deltaTime;
+		if (timeTillNextRow > 0) {
+			timeTillNextRow -= Time.deltaTime;
+		} else {
+			timeTillNextRow = 0;
+		}
 		totalTimePassed += Time.deltaTime;
 	}
 	private void addNextRow ()
 	{
-		if (blockrows.Count >= 6) {
+		BinaryBlockRow newRow;
+		if (timeLimitOnThisLevel && blockrows.Count >= 6) {
 			gameOver ();
 		} else {
 			timeTillNextRow = maxTimeTillNextRow;
-			temp = gameObject.AddComponent<BinaryBlockRow> ();
-			temp.Goalnum = numberProblems [level] [playerOnProblemNum++];
-			temp.opacity (5);
-			blockrows.Add (temp);
+			newRow = gameObject.AddComponent<BinaryBlockRow> ();
+			if (generateRandomProblemNums) {
+				newRow.Goalnum = randomProblemNumber ();
+			} else {
+				newRow.Goalnum = numberProblems [level] [playerOnProblemNum++];
+			}
+			Vector3 tempv = new Vector3 (rowxpos, rowypos + blockrows.Count + 1 * 1.05f, 0);
+			newRow.updatePos (tempv);
+			newRow.opacity (5);
+			blockrows [blockrows.Count - 1].opacity (0);
+			blockrows.Add (newRow);
+			nextRowFlag = true;
 		}
+	}
+	private int randomProblemNumber ()
+	{
+		int numOfBitsToUse, ret = 0;
+		char[] numtext = "00000000".ToCharArray ();
+		switch (level) {
+		case 3:
+			numOfBitsToUse = 3;
+			break;
+		case 4:
+			numOfBitsToUse = 3;
+			break;
+		case 5:
+			numOfBitsToUse = 4;
+			break;
+		case 6:
+			numOfBitsToUse = 5;
+			break;
+		case 7:
+			numOfBitsToUse = Random.Range (1, 8);
+			break;
+		default:
+			numOfBitsToUse = 1;
+			break;
+		}
+		int temp;
+		for (int a =0; a<numOfBitsToUse; ++a) {
+			while (numtext[(temp = Random.Range(0,8))] != '1') {
+				numtext [temp] = '1';
+			}
+
+		}
+		for (int a =7; a>=0; a--) {
+			if (numtext [a] == '1') {
+				ret += (int)System.Math.Pow (2, a);
+			}
+		}
+
+		return ret;
 	}
 	private void initializeRowPlacement ()
 	{
@@ -160,7 +264,6 @@ public class BinaryGame : MonoBehaviour
 			Vector3 tempv = new Vector3 (rowxpos, rowypos + a * 1.05f, 0);
 			if (blockrows [a] != null) {
 				blockrows [a].updatePos (tempv);
-				blockrows [a].updateDifficulty (medium);
 			}
 		}
 
@@ -181,7 +284,7 @@ public class BinaryGame : MonoBehaviour
 
 		if (blockrows [a] != null)
 			blockrows [a].rowSolved (time);
-		scorenum += (100 - totalTimePassed);
+		scorenum += Mathf.Max ((100 - totalTimePassed), 50);
 		rowsToRemove.Add (a);
 		Invoke ("removeRowsSolved", time);
 		if (playerOnProblemNum + 1 >= numberProblemsLength) {
