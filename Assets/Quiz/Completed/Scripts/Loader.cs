@@ -23,5 +23,9 @@ namespace Completed
 				//Instantiate SoundManager prefab
 				Instantiate(soundManager);
 		}
+
+		public void cameraBack() {
+			transform.position = new Vector3(2.5f, 3.5f, -10f);
+		}
 	}
 }

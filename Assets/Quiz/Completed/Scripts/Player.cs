@@ -20,14 +20,18 @@ namespace Completed
 		public AudioClip drinkSound2;				//2 of 2 Audio clips to play when player collects a soda object.
 		public AudioClip gameOverSound;				//Audio clip to play when player dies.
 
+		public float smooth = 1.5f;
 
 		private int food;							//Used to store player food points total during level.
 		private Vector2 touchOrigin = -Vector2.one;	//Used to store location of screen touch origin for mobile controls.
-		
-		
+		private Vector3 newPos;             // The position the camera is trying to reach.
+		private Vector3 oldPos; 
+
 		//Start overrides the Start function of MovingObject
 		protected override void Start ()
 		{
+			newPos = new Vector3 (55.2f, -3.3f, -10f);
+			oldPos = Camera.main.transform.position;
 			
 			//Get the current food point total stored in GameManager.instance between levels.
 			food = GameManager.instance.playerFoodPoints;
@@ -180,9 +184,14 @@ namespace Completed
 			}
 			
 			//Check if the tag of the trigger collided with is Food.
-			else if(other.tag == "Food")
+			else if(other.tag == "Food" || other.tag == "Soda")
 			{
-				if(false) {
+				Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, newPos, 10.0f);
+
+				GameObject question = (GameObject)Instantiate(Resources.Load("q1"), new Vector3(55.86f, -4.24f, -9f), Quaternion.identity);
+				question.transform.localScale = new Vector3(.5f, .5f, 1f);
+
+				if(true) {
 					//Add pointsPerFood to the players current food total.
 					food += pointsPerFood;
 					
@@ -196,24 +205,7 @@ namespace Completed
 					other.gameObject.SetActive (false);
 				}
 			}
-			
-			//Check if the tag of the trigger collided with is Soda.
-			else if(other.tag == "Soda")
-			{
-				//Add pointsPerSoda to players food points total
-				food += pointsPerSoda;
-				
-				//Update foodText to represent current total and notify player that they gained points
-				foodText.text = "+" + pointsPerSoda + " Food: " + food;
-				
-				//Call the RandomizeSfx function of SoundManager and pass in two drinking sounds to choose between to play the drinking sound effect.
-				SoundManager.instance.RandomizeSfx (drinkSound1, drinkSound2);
-				
-				//Disable the soda object the player collided with.
-				other.gameObject.SetActive (false);
-			}
 		}
-		
 		
 		//Restart reloads the scene when called.
 		private void Restart ()

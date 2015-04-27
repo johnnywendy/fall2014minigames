@@ -9,6 +9,8 @@ public class AnswerBlock : MonoBehaviour {
 	public bool isAnswer = false;
 	public bool press = false;
 
+	public bool answerRight = false;
+
 	// Use this for initialization
 	void Start () {
 		letter.text = startText;
@@ -28,15 +30,20 @@ public class AnswerBlock : MonoBehaviour {
 			//puts alert if right or wrong answer was chosen
 			GameObject alert = (GameObject)Instantiate(Resources.Load("MsgSmall", typeof(GameObject)),Vector3.zero,Quaternion.identity);
 			MessageBox alertBox = alert.GetComponent<MessageBox>();
-			if(isAnswer)
+			if(isAnswer) {
 				alertBox.message = "You picked the right answer.";
-			else
+				answerRight = true;
+			}
+			else {
 				alertBox.message = "You picked the wrong answer.";
+				answerRight = false;
+			}
 			alertBox.rightButtonText = "OK";
 			alertBox.leftButtonText = "ALRIGHT";
-			GameObject obj = GameObject.Find ("question");
-			alertBox.SetLeftAction(obj,"listQuestions","newSet");
-			alertBox.SetRightAction(obj,"listQuestions","newSet");
+			GameObject obj = GameObject.Find ("Main Camera");
+			alertBox.SetLeftAction(obj,"Loader","cameraBack");
+			alertBox.SetRightAction(obj,"Loader","cameraBack");
+
 		}
 	}
 
