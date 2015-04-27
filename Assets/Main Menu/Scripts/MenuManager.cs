@@ -13,7 +13,7 @@ public class MenuManager : MonoBehaviour {
 	void Awake() {
 		GameData.RegisterGame(0,10);
 		GameData.RegisterGame(1,6);
-		GameData.RegisterGame(2,6);
+		GameData.RegisterGame(2,0);
 		GameData.RegisterGame(3,8);
 		GameData.RegisterGame(4,6);
 	}
