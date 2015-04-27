@@ -34,9 +34,7 @@ namespace Completed
 			hp -= loss;
 			
 			//If hit points are less than or equal to zero:
-			if(hp <= 0)
-				//Disable the gameObject.
-				gameObject.SetActive (false);
+			//if(hp <= 0)
 		}
 	}
 }
