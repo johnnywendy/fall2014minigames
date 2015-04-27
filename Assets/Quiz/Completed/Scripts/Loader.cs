@@ -7,7 +7,7 @@ namespace Completed
 	{
 		public GameObject gameManager;			//GameManager prefab to instantiate.
 		public GameObject soundManager;			//SoundManager prefab to instantiate.
-		
+		public GameObject playa;
 		
 		void Awake ()
 		{
@@ -24,8 +24,10 @@ namespace Completed
 				Instantiate(soundManager);
 		}
 
-		public void cameraBack() {
+		public void cameraBack(bool answerRight) {
 			transform.position = new Vector3(2.5f, 3.5f, -10f);
+			playa.GetComponent<Player> ().answered (answerRight);
+
 		}
 	}
 }

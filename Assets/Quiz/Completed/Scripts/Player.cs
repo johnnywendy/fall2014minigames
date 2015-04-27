@@ -26,6 +26,8 @@ namespace Completed
 		private Vector2 touchOrigin = -Vector2.one;	//Used to store location of screen touch origin for mobile controls.
 		private Vector3 newPos;             // The position the camera is trying to reach.
 		private Vector3 oldPos; 
+		private GameObject question;
+		private GameObject otherObject;
 
 		//Start overrides the Start function of MovingObject
 		protected override void Start ()
@@ -133,7 +135,7 @@ namespace Completed
 			food--;
 			
 			//Update food text display to reflect current score.
-			foodText.text = "Food: " + food;
+			foodText.text = "Energy: " + food;
 			
 			//Call the AttemptMove method of the base class, passing in the component T (in this case Wall) and x and y direction to move.
 			base.AttemptMove <T> (xDir, yDir);
@@ -188,22 +190,36 @@ namespace Completed
 			{
 				Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, newPos, 10.0f);
 
-				GameObject question = (GameObject)Instantiate(Resources.Load("q1"), new Vector3(55.86f, -4.24f, -9f), Quaternion.identity);
-				question.transform.localScale = new Vector3(.5f, .5f, 1f);
-
-				if(true) {
-					//Add pointsPerFood to the players current food total.
-					food += pointsPerFood;
-					
-					//Update foodText to represent current total and notify player that they gained points
-					foodText.text = "+" + pointsPerFood + " Food: " + food;
-					
-					//Disable the food object the player collided with.
-					other.gameObject.SetActive (false);
+				float rand = Random.Range(-1.0F, 1.0F);
+				if(rand > 0) {
+					question = (GameObject)Instantiate(Resources.Load("q1"), new Vector3(55.86f, -4.24f, -9f), Quaternion.identity);
+					question.transform.localScale = new Vector3(.5f, .5f, 1f);
 				} else {
-					//Disable the food object the player collided with.
-					other.gameObject.SetActive (false);
+					question = (GameObject)Instantiate(Resources.Load("q2"), new Vector3(55.86f, -4.24f, -9f), Quaternion.identity);
+					question.transform.localScale = new Vector3(.5f, .5f, 1f);
 				}
+
+				otherObject = other.gameObject;
+			}
+		}
+
+		public void answered(bool answerRight) {
+
+			Camera.main.transform.position = new Vector3(2.5f, 3.5f, -10f);
+			Destroy(question);
+
+			if(answerRight) {
+				//Add pointsPerFood to the players current food total.
+				food += pointsPerFood;
+				
+				//Update foodText to represent current total and notify player that they gained points
+				foodText.text = "+" + pointsPerFood + " Energy: " + food;
+				
+				//Disable the food object the player collided with.
+				otherObject.SetActive (false);
+			} else {
+				//Disable the food object the player collided with.
+				otherObject.SetActive (false);
 			}
 		}
 		
@@ -225,7 +241,7 @@ namespace Completed
 			food -= loss;
 			
 			//Update the food display with the new total.
-			foodText.text = "-"+ loss + " Food: " + food;
+			foodText.text = "-"+ loss + " Energy: " + food;
 			
 			//Check to see if game has ended.
 			CheckIfGameOver ();

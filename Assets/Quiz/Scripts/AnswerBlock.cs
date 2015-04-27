@@ -41,8 +41,8 @@ public class AnswerBlock : MonoBehaviour {
 			alertBox.rightButtonText = "OK";
 			alertBox.leftButtonText = "ALRIGHT";
 			GameObject obj = GameObject.Find ("Main Camera");
-			alertBox.SetLeftAction(obj,"Loader","cameraBack");
-			alertBox.SetRightAction(obj,"Loader","cameraBack");
+			alertBox.SetLeftAction(obj,"Loader","cameraBack", answerRight);
+			alertBox.SetRightAction(obj,"Loader","cameraBack", answerRight);
 
 		}
 	}
