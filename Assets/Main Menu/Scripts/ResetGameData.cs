@@ -37,6 +37,7 @@ public class ResetGameData : MonoBehaviour {
 		GameData.ForceReRegisterGame(4,6);
 		GameObject alert = (GameObject)Instantiate(Resources.Load("MsgSmall", typeof(GameObject)),Vector3.zero,Quaternion.identity);
 		MessageBox alertBox = alert.GetComponent<MessageBox>();
+		Camera.main.GetComponent<MenuManager>().SetPercentage();
 		alertBox.message = "Game data reset successfully";
 		alertBox.SetLeftAction("destroy");
 		alertBox.SetRightAction("destroy");

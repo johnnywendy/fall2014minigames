@@ -403,9 +403,9 @@ public class LGManager_1 : MonoBehaviour {
 			MessageBox alertBox = alert.GetComponent<MessageBox>();
 			alertBox.message = "I see it's your first time playing.\nCheck out this quick tutorial!";
 			alertBox.rightButtonText = "OK";
-			alertBox.leftButtonText = "ALRIGHT";
+			alertBox.leftButtonText = "NO THANKS";
 			GameObject tut = GameObject.Find ("Tutorial");
-			alertBox.SetLeftAction(tut,"TutorialScript","StartTutorial");
+			alertBox.SetLeftAction(tut,"TutorialScript","CancelTutorial");
 			alertBox.SetRightAction(tut,"TutorialScript","StartTutorial");
 		}
 		if (level == 2) {
@@ -413,9 +413,9 @@ public class LGManager_1 : MonoBehaviour {
 			MessageBox alertBox = alert.GetComponent<MessageBox>();
 			alertBox.message = "Great Job! Here are\ntwo more quick tips!";
 			alertBox.rightButtonText = "OK";
-			alertBox.leftButtonText = "ALRIGHT";
+			alertBox.leftButtonText = "NO THANKS";
 			GameObject tut = GameObject.Find ("Tutorial-2");
-			alertBox.SetLeftAction(tut,"TutorialScript","StartTutorial");
+			alertBox.SetLeftAction(tut,"TutorialScript","CancelTutorial");
 			alertBox.SetRightAction(tut,"TutorialScript","StartTutorial");
 		}
 	}

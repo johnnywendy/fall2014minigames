@@ -56,7 +56,7 @@ public class MenuManager : MonoBehaviour {
 		}
 	}
 
-	void SetPercentage() {
+	public void SetPercentage() {
 		float total = 0; float completed = 0;
 		for (int i = 0; i < 4; i++) {
 			total += GameData.GetLevelCount(i);

@@ -44,7 +44,11 @@ public class TutorialScript : MonoBehaviour {
 		ready = false;
 	}
 
-	void StartTutorial() {
+	public void CancelTutorial() {
+		GameObject.Destroy(this.gameObject);
+	}
+
+	public void StartTutorial() {
 		if (GameData.GetCurrentGame() == 0) {
 			if (GameData.GetCurrentLevel() == 1)
 				tutorialTexts = circuitTexts;
