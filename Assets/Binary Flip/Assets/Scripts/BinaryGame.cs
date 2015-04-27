@@ -18,6 +18,7 @@ public class BinaryGame : MonoBehaviour
 	TextMesh timeTextMesh;
 	float scorenum = 0;
 	float timeTillNextRow = 20;
+	float timeTillGameOver = 99;
 	float maxTimeTillNextRow = 5;
 	float totalTimePassed = 0;
 	int lastnumofRows = 6;
@@ -39,16 +40,17 @@ public class BinaryGame : MonoBehaviour
 		new List<int> {-1},
 		new List<int> {-1}
 	};
-	int[] rowTimesPerLevel = new int[] {9,10,10,10,10,10,10,10};
 	int playerOnProblemNum = 0;
-	int numberProblemsLength = 1;
+	int numberProblemsLength = 100;
 	bool generateRandomProblemNums = false;
 	bool timeLimitOnThisLevel = false;
-
+	bool testing = true;
 	void Start ()
 	{
 		level = GameData.GetCurrentLevel () - 1;
-		level = 3;
+		if (testing) {
+			setAllLevelsCompleted ();
+		}
 		if (numberProblems [level] [0] == -1) {
 			generateRandomProblemNums = true;
 		} else {
@@ -60,13 +62,15 @@ public class BinaryGame : MonoBehaviour
 			timeLimitOnThisLevel = false;
 		}
 		if (timeLimitOnThisLevel) {
-			maxTimeTillNextRow = 15;
+			maxTimeTillNextRow = 2;
+			timeTillNextRow = 0;
 		} else {
-			maxTimeTillNextRow = 4;
+			maxTimeTillNextRow = 2;
+			timeTillNextRow = 0;
 			Destroy (time);
 			Destroy (timeText);
 		}
-		timeTillNextRow = maxTimeTillNextRow;
+
 		switch (level) {
 		case 0:
 			numberProblemsLength = numberProblems [level].Count;
@@ -126,7 +130,7 @@ public class BinaryGame : MonoBehaviour
 
 		if (!gameoverbool) {
 			incrementTime ();
-			if (nextRowFlag && playerOnProblemNum + 1 < numberProblemsLength && ((!timeLimitOnThisLevel && blockrows.Count < 5) || (timeLimitOnThisLevel && timeTillNextRow <= 0f))) {
+			if (nextRowFlag && playerOnProblemNum + 1 < numberProblemsLength && blockrows.Count < 5) {
 				nextRowFlag = false;
 				addNextRow ();
 			}
@@ -134,7 +138,8 @@ public class BinaryGame : MonoBehaviour
 			if (!init) {
 				initializeRowPlacement ();
 			}
-			if (timeLimitOnThisLevel) {
+			//if (timeLimitOnThisLevel) {
+			if (false) {
 				if (timeTillNextRow <= 4) {
 					blockrows [blockrows.Count - 1].opacity (timeTillNextRow);
 				} else {
@@ -184,7 +189,7 @@ public class BinaryGame : MonoBehaviour
 	{
 		scoreTextMesh.text = scorenum.ToString ("0000");
 		if (timeLimitOnThisLevel) {
-			timeTextMesh.text = timeTillNextRow.ToString ("00");
+			timeTextMesh.text = timeTillGameOver.ToString ("00");
 		}
 	}
 
@@ -195,6 +200,12 @@ public class BinaryGame : MonoBehaviour
 		} else {
 			timeTillNextRow = 0;
 		}
+		if (timeLimitOnThisLevel) {
+			timeTillGameOver -= Time.deltaTime;
+			if (timeTillGameOver <= 0) {
+				levelbeaten ();
+			}
+		}
 		totalTimePassed += Time.deltaTime;
 	}
 	private void addNextRow ()
@@ -202,6 +213,8 @@ public class BinaryGame : MonoBehaviour
 		BinaryBlockRow newRow;
 		if (timeLimitOnThisLevel && blockrows.Count >= 6) {
 			gameOver ();
+		} else if (playerOnProblemNum + 1 >= numberProblemsLength) {
+
 		} else {
 			timeTillNextRow = maxTimeTillNextRow;
 			newRow = gameObject.AddComponent<BinaryBlockRow> ();
@@ -215,8 +228,8 @@ public class BinaryGame : MonoBehaviour
 			newRow.opacity (5);
 			blockrows [blockrows.Count - 1].opacity (0);
 			blockrows.Add (newRow);
-			nextRowFlag = true;
 		}
+		nextRowFlag = true;
 	}
 	private int randomProblemNumber ()
 	{
@@ -244,11 +257,13 @@ public class BinaryGame : MonoBehaviour
 		}
 		int temp;
 		for (int a =0; a<numOfBitsToUse; ++a) {
-			while (numtext[(temp = Random.Range(0,8))] != '1') {
-				numtext [temp] = '1';
+			temp = Random.Range (0, 8);
+			while (numtext[temp] == 1) {
 			}
+			numtext [temp] = '1';
 
 		}
+		Debug.Log (new string (numtext));
 		for (int a =7; a>=0; a--) {
 			if (numtext [a] == '1') {
 				ret += (int)System.Math.Pow (2, a);
@@ -276,6 +291,9 @@ public class BinaryGame : MonoBehaviour
 
 		}
 		rowsToRemove.Clear ();
+		if (blockrows.Count == 0) {
+			levelbeaten ();
+		}
 	}
 
 	private void rowSolved (int a)
@@ -287,9 +305,6 @@ public class BinaryGame : MonoBehaviour
 		scorenum += Mathf.Max ((100 - totalTimePassed), 50);
 		rowsToRemove.Add (a);
 		Invoke ("removeRowsSolved", time);
-		if (playerOnProblemNum + 1 >= numberProblemsLength) {
-			levelbeaten ();
-		}
 	
 	}
 
@@ -298,6 +313,17 @@ public class BinaryGame : MonoBehaviour
 		gameoverbool = true;
 		init = false;
 		GameData.CompletedLevel (GameData.GetCurrentGame (), level + 1);
+		if (level != 7) {
+			GameData.SetCurrentLevel (GameData.GetCurrentLevel () + 1);
+		}
+		//MENU POPUP
+		GameObject alert = (GameObject)Instantiate (Resources.Load ("MsgSmall", typeof(GameObject)), Vector3.zero, Quaternion.identity);
+		MessageBox alertBox = alert.GetComponent<MessageBox> ();
+		alertBox.message = "Great Job!";
+		alertBox.rightButtonText = "Next Level";
+		alertBox.leftButtonText = "Main Menu";
+		alertBox.SetLeftAction ("loadscene", "Main");
+		alertBox.SetRightAction ("loadscene", "binarylevel");
 	}
 
 	private void gameOver ()
@@ -312,6 +338,14 @@ public class BinaryGame : MonoBehaviour
 		alertBox.rightButtonText = "Keep Playing";
 		alertBox.SetLeftAction ("loadscene", "MainMenu");
 		alertBox.SetRightAction ("loadscene", "binarylevel");
+	}
+
+	private void setAllLevelsCompleted ()
+	{
+		int gamenum = GameData.GetCurrentGame ();
+		for (int a=1; a<=8; a++) {
+			GameData.CompletedLevel (gamenum, a);
+		}
 	}
 			
 }
