@@ -63,8 +63,9 @@ namespace Completed
 			int vertical = 0;		//Used to store the vertical move direction.
 			
 			//Check if we are running either in the Unity editor or in a standalone build.
-			#if UNITY_STANDALONE || UNITY_WEBPLAYER
-			
+			#if UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE || UNITY_STANDALONE || UNITY_WEBPLAYER
+			//remove UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE || if you want to use it for iPad
+
 			//Get input from the input manager, round it to an integer and store in horizontal to set x axis move direction
 			horizontal = (int) (Input.GetAxisRaw ("Horizontal"));
 			
@@ -188,18 +189,16 @@ namespace Completed
 			//Check if the tag of the trigger collided with is Food.
 			else if(other.tag == "Food" || other.tag == "Soda")
 			{
+
+				Destroy(other);
+
 				Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, newPos, 10.0f);
 
-				float rand = Random.Range(-1.0F, 1.0F);
-				if(rand > 0) {
-					question = (GameObject)Instantiate(Resources.Load("q1"), new Vector3(55.86f, -4.24f, -9f), Quaternion.identity);
-					question.transform.localScale = new Vector3(.5f, .5f, 1f);
-				} else {
 					question = (GameObject)Instantiate(Resources.Load("q2"), new Vector3(55.86f, -4.24f, -9f), Quaternion.identity);
 					question.transform.localScale = new Vector3(.5f, .5f, 1f);
-				}
 
-				otherObject = other.gameObject;
+				//Disable the food object the player collided with.
+				otherObject.SetActive (false);
 			}
 		}
 
@@ -215,17 +214,14 @@ namespace Completed
 				//Update foodText to represent current total and notify player that they gained points
 				foodText.text = "+" + pointsPerFood + " Energy: " + food;
 				
-				//Disable the food object the player collided with.
-				otherObject.SetActive (false);
-			} else {
-				//Disable the food object the player collided with.
-				otherObject.SetActive (false);
+
 			}
 		}
 		
 		//Restart reloads the scene when called.
 		private void Restart ()
 		{
+
 			//Load the last scene loaded, in this case Main, the only scene in the game.
 			Application.LoadLevel (Application.loadedLevel);
 		}
